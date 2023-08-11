@@ -30,7 +30,6 @@ export default class CadastroProcessoModal extends React.Component{
     }
 
     componentDidMount() {
-        // Faça uma requisição para sua API para obter a lista de PDVs
         this.CadastroPDVService.listar().then(response => {
             this.setState({ pdvList: response.data });
           })
@@ -39,37 +38,53 @@ export default class CadastroProcessoModal extends React.Component{
           });
       }
 
-    cadastrar = () => {
+    validar(){
+        const msgs = []
 
         if (!this.state.nome) {
-            mensagemErro('O campo Nome está nulo!');
-            return;
+            msgs.push('O campo Nome está nulo!');
         }
         
         if (!this.state.qtdVagas) {
-            mensagemErro('O campo Vagas está nulo!');
-            return;
+            msgs.push('O campo Vagas está nulo!');
         }
 
         if (!this.state.tipoVaga) {
-            mensagemErro('O campo Tipo da Vaga está nulo!');
-            return;
+            msgs.push('O campo Tipo da Vaga está nulo!');
         }
 
         if (!this.state.turnoVaga) {
-            mensagemErro('O campo Turno da Vaga está nulo!');
-            return;
+            msgs.push('O campo Turno da Vaga está nulo!');
         }
 
-        this.cadastroProcessoService.cadastrar({
+        return msgs;
+    }
+
+    cadastrar = () => {
+
+       const msgs = this.validar();
+
+       if(msgs && msgs.length >0){
+            msgs.forEach((msg, index) => {
+                mensagemErro(msg)
+            })
+            return false;
+       }
+
+       const pdvMontado = {
+        id: this.state.pdv
+       }
+
+        const processo = {
             dataInicio: this.state.dataInicio,
             nome: this.state.nome,
             qtdVagas: this.state.qtdVagas,
             tipoVaga: this.state.tipoVaga,
             turnoVaga: this.state.turnoVaga,
-            pdv: null
+            pdv: pdvMontado
+        }
 
-        }).then( response => {
+        this.cadastroProcessoService.cadastrar(processo).then( response => {
                 this.setState({dataInicio: '', nome: '', qtdVagas: '', tipoVaga: '', turnoVaga: '', pdv: ''});
                 mensagemSucesso('Cadastro realizado com sucesso!')
             }).catch( erro => {
@@ -143,6 +158,7 @@ export default class CadastroProcessoModal extends React.Component{
                     <option value="MANHA">Manhã</option>
                     <option value="TARDE">Tarde</option>
                     <option value="MANHA_TARDE">Manhã & Tarde</option>
+                    <option value="INTEGRAL">Integral</option>
                     </Form.Control>
                 </Form.Group>
 
