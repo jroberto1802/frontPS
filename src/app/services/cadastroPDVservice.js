@@ -1,6 +1,6 @@
 import ApiService from '../apiservice'
 
-export default class CadastroPDVService extends ApiService{
+class CadastroPDVService extends ApiService{
 
     constructor(){
         super('/pdvs')
@@ -9,4 +9,10 @@ export default class CadastroPDVService extends ApiService{
     cadastrar(usuario){
         return this.post('', usuario);
     }
+
+    listar(){
+        return this.get('');
+    }
 }
+
+export default CadastroPDVService;
