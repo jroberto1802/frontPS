@@ -3,8 +3,7 @@ import Card from "../components/card";
 import FormGroup from "../components/form-group";
 import { withRouter } from 'react-router-dom'
 import CadastroPDVService from "../app/services/cadastroPDVservice";
-import { mensagemSucesso } from '../components/toastr'
-import { mensagemErro } from '../components/toastr'
+import { mensagemSucesso, mensagemErro } from '../components/toastr'
 
 class CadastroPDV extends React.Component{
 
@@ -17,7 +16,7 @@ class CadastroPDV extends React.Component{
     constructor() {
         super();
         this.service = new CadastroPDVService();
-      }
+    }
 
     cadastrar = () => {
 
@@ -50,7 +49,7 @@ class CadastroPDV extends React.Component{
     render(){
         return(
             <div className="row">
-                <div className="col-lg-6" style={{position: 'relative'} }>
+                <div className="col-lg-4" style={{position: 'relative'} }>
                     <div className="bs-component">
                         <Card title="Cadastro de PDVs">
                             <FormGroup label="Nome: *" htmlFor="inputNome">

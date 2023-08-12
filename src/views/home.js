@@ -1,6 +1,6 @@
 import React from "react";
 import { withRouter } from 'react-router-dom'
-import CadastroProcessoModal from "../components/modalCadastrarProcesso";
+import CadastroProcessoModal from "../views/modalCadastrarProcesso";
 
 
 class Home extends React.Component{

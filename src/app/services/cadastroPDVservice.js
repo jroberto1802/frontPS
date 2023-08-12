@@ -13,6 +13,10 @@ class CadastroPDVService extends ApiService{
     listar(){
         return this.get('');
     }
+
+    listarById(id){
+        return this.get('/'+id)
+    }
 }
 
 export default CadastroPDVService;
