@@ -51,7 +51,7 @@ export default class CadastroProcessoModal extends React.Component{
           .catch(error => {
             console.error('Erro ao buscar a lista de PDVs:', error);
           });
-      }
+    }
 
     
 

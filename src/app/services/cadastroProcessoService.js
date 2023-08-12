@@ -9,4 +9,8 @@ export default class CadastroProcessoService extends ApiService{
     cadastrar(processo){
         return this.post('', processo);
     }
+
+    listar(){
+        return this.get('');
+    }
 }
