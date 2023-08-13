@@ -13,4 +13,13 @@ export default class CadastroProcessoService extends ApiService{
     listar(){
         return this.get('');
     }
+
+    listarProcessosFechados(){
+        return this.get('/fechados')
+    }
+
+    alterar(id, obj){
+        return this.put(`/${id}/finalizar`, obj)
+    }
+
 }

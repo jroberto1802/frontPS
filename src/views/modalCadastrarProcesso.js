@@ -41,7 +41,7 @@ export default class CadastroProcessoModal extends React.Component{
         const mesInicio = dataInicio.getMonth();
         const mesExtenso = mesesEmPortugues[mesInicio];
         
-        return `${pdvNome}-${mesExtenso}${anoInicio}`;
+        return `${pdvNome} ${mesExtenso}${anoInicio}`;
     };
 
     componentDidMount() {

@@ -1,15 +1,18 @@
 import React from "react";
 import { withRouter } from 'react-router-dom'
 import CadastroProcessoModal from "../views/modalCadastrarProcesso";
+import ProcessosFinalizadosModal from "../views/modalProcessosFinalizados";
 import Cardblock from "../components/cardblock";
 import CadastroProcessoService from "../app/services/cadastroProcessoService";
+import { mensagemSucesso } from '../components/toastr'
 
 
 class Home extends React.Component{
 
     state = {
         saldo: 0,
-        modalAberto: false,
+        modalCadastroProcesso: false,
+        modalProcessosFinalizados: false,
         processos: []
     }
 
@@ -18,12 +21,22 @@ class Home extends React.Component{
         this.cadastroProcessoService = new CadastroProcessoService();
     }
 
-    abrirModal = () => {
-        this.setState({ modalAberto: true });
+    abrirCadastroProcessoModal = () => {
+        this.setState({ modalCadastroProcesso: true });
     }
 
-    fecharModal = () => {
-        this.setState({ modalAberto: false });
+    fecharCadastroProcessoModal = () => {
+        this.setState({ modalCadastroProcesso: false });
+        this.listarProcessos();
+    }
+
+    abrirProcessosFinalizadosModal = () => {
+        this.setState({ modalProcessosFinalizados: true });
+    }
+
+    fecharProcessosFinalizadosModal = () => {
+        this.setState({ modalProcessosFinalizados: false });
+        this.listarProcessos();
     }
 
     listarProcessos() {
@@ -39,6 +52,25 @@ class Home extends React.Component{
         this.listarProcessos();
     }
 
+    
+
+    atualizarDataFinal = async (id) => {
+        const novaData = new Date()
+        novaData.setHours(novaData.getHours() - 3);
+
+        const data = {
+            dataFinal: novaData.toISOString().slice(0, 19)+'Z'
+        };
+    
+        try {
+            await this.cadastroProcessoService.alterar(id, data);
+            this.listarProcessos(); // Atualize a lista de processos após a alteração
+            mensagemSucesso(`Processo Seletivo ${id} finalizado com sucesso!`)
+        } catch (error) {
+            console.error("Erro na requisição PUT:", error);
+        }
+    }
+
     render(){
         return(
             <div class="container">
@@ -47,15 +79,20 @@ class Home extends React.Component{
                     <p className="lead">Esse é seu sistema de Processos Seletivos.</p>
                     <p className="lead">Processos em aberto:</p>
                     <div className="container">
-                        <div className="row" >
+                        <div className="row custom-column">
                             {this.state.processos.map((processo, index) => (
-                                <div className="col-md-3 mb-1" key={index} style={{ marginBottom: '0.5rem' }}>
+                                <div className="col-md-3 mb-3" key={index}>
                                     <Cardblock
-                                        nomeProcesso={processo.nomeProcesso}
+                                        nome={processo.nome}
                                         tipoVaga={processo.tipoVaga}
-                                        dataInicio={`Inicio em: ${processo.dataInicio}`}
-                                        qtdVagas={processo.qtdVagas}
-                                    />
+                                        dataInicio={processo.dataInicio}
+                                        qtdVagas={processo.qtdVagas}>
+
+                                        <div style={{ display: "flex", gap: '1rem' }}>
+                                            <button onClick={() => this.atualizarDataFinal(processo.id)} type="button" className="btn btn-danger btn-sm">Finalizar</button>
+                                            <button onClick={this.cancelar} type="button" className="btn btn-success btn-sm">Detalhar</button>
+                                        </div>
+                                    </Cardblock>
                                 </div>
                             ))}
                         </div>
@@ -65,21 +102,26 @@ class Home extends React.Component{
                     <p className="lead">
                         <div style={{ display: 'flex', gap: '1rem' }}>
                         <a className="btn btn-primary btn-lg " 
-                            role="button" onClick={this.abrirModal}>
+                            role="button" onClick={this.abrirCadastroProcessoModal}>
                             <i className="fa fa-users"></i>  
                             Novo Processo
                         </a>
                         <a className="btn btn-danger btn-lg mr-1" 
-                            href="https://bootswatch.com/flatly/#" 
-                            role="button" onClick={this.abrirModal}>
+                            role="button" onClick={this.abrirProcessosFinalizadosModal}>
                             <i className="fa fa-users"></i>  
                             Processos Finalizados
                         </a>
                         </div>
-                        {this.state.modalAberto && (
+                        {this.state.modalCadastroProcesso && (
                             <CadastroProcessoModal
                                 showModal={true}
-                                onClose={this.fecharModal}
+                                onClose={this.fecharCadastroProcessoModal}
+                            />
+                        )}
+                        {this.state.modalProcessosFinalizados && (
+                            <ProcessosFinalizadosModal
+                                showModal={true}
+                                onClose={this.fecharProcessosFinalizadosModal}
                             />
                         )}
                     </p>
