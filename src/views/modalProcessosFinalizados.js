@@ -23,9 +23,7 @@ export default class ProcessosFinalizadosModal extends React.Component{
             pdvNome: ''
         };
     }
-
-    
-
+  
     componentDidMount() {
         this.cadastroProcessoService.listarProcessosFechados().then(response => {
             this.setState({ processos: response.data });

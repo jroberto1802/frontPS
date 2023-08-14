@@ -13,7 +13,7 @@ function Rotas(){
                 <Route path="/home" component={Home} />
                 <Route path="/cadastro-pdv" component={CadastroPDV} />
                 <Route path="/cadastro-questionario" component={cadastroQuestionario} />
-                <Route path="/cadastro-processos" component={cadastroProcessos} />
+                <Route path="/cadastro-processos/:idProcessoSelecionado" component={cadastroProcessos} />
             </Switch>
         </HashRouter>
     )

@@ -14,6 +14,10 @@ export default class CadastroProcessoService extends ApiService{
         return this.get('');
     }
 
+    buscarId(id){
+        return this.get(`/${id}`);
+    }
+
     listarProcessosFechados(){
         return this.get('/fechados')
     }

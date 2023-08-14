@@ -10,6 +10,6 @@ body{padding-top:120px}pre{background:#f7f7f9}@media (min-width: 768px){body>.na
   }
 
   .custom-modal-xl {
-    max-width: 1500px; /* Defina a largura desejada para a modal */
+    max-width: 1300px; /* Defina a largura desejada para a modal */
     margin: 1 auto;
 }

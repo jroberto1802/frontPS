@@ -6,6 +6,7 @@ import Cardblock from "../components/cardblock";
 import CadastroProcessoService from "../app/services/cadastroProcessoService";
 import { mensagemSucesso } from '../components/toastr'
 import processosFinalizadosTable from "./processosFinalizadosTable";
+import cadastroProcessos from "./cadastro-processos";
 
 
 class Home extends React.Component{
@@ -14,7 +15,8 @@ class Home extends React.Component{
         saldo: 0,
         modalCadastroProcesso: false,
         modalProcessosFinalizados: false,
-        processos: []
+        processos: [],
+        idProcessoSelecionado: null
     }
 
     constructor(){
@@ -65,7 +67,7 @@ class Home extends React.Component{
     
         try {
             await this.cadastroProcessoService.alterar(id, data);
-            this.listarProcessos(); // Atualize a lista de processos após a alteração
+            this.listarProcessos(); 
             mensagemSucesso(`Processo Seletivo ${id} finalizado com sucesso!`)
         } catch (error) {
             console.error("Erro na requisição PUT:", error);
@@ -74,7 +76,7 @@ class Home extends React.Component{
 
     render(){
         return(
-            <div class="container">
+            <div className="container">
                 <div className="jumbotron" >
                     <h1 className="display-3">Bem vindo!</h1>
                     <p className="lead">Esse é seu sistema de Processos Seletivos.</p>
@@ -91,7 +93,12 @@ class Home extends React.Component{
 
                                         <div style={{ display: "flex", gap: '1rem' }}>
                                             <button onClick={() => this.atualizarDataFinal(processo.id)} type="button" className="btn btn-danger btn-sm">Finalizar</button>
-                                            <button onClick={this.cancelar} type="button" className="btn btn-success btn-sm">Detalhar</button>
+                                            <button onClick={() => {
+                                                        this.setState({ idProcessoSelecionado: processo.id });
+                                                        this.props.history.push(`/cadastro-processos/${processo.id}`);
+                                                        }}
+                                                    type="button" 
+                                                    className="btn btn-success btn-sm">Detalhar</button>
                                         </div>
                                     </Cardblock>
                                 </div>
