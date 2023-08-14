@@ -5,6 +5,7 @@ import ProcessosFinalizadosModal from "../views/modalProcessosFinalizados";
 import Cardblock from "../components/cardblock";
 import CadastroProcessoService from "../app/services/cadastroProcessoService";
 import { mensagemSucesso } from '../components/toastr'
+import processosFinalizadosTable from "./processosFinalizadosTable";
 
 
 class Home extends React.Component{

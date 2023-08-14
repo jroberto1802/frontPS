@@ -3,6 +3,7 @@ import { Button, Modal, Form } from 'react-bootstrap';
 import CadastroProcessoService from '../app/services/cadastroProcessoService';
 import { mensagemErro } from '../components/toastr'
 import { mensagemSucesso } from '../components/toastr'
+import ProcessosFinalizadosTable from './processosFinalizadosTable';
 
 export default class ProcessosFinalizadosModal extends React.Component{
 
@@ -37,18 +38,19 @@ export default class ProcessosFinalizadosModal extends React.Component{
     render(){
         const { onClose, showModal } = this.props;
 
+
         return (
-            <Modal show={showModal} onHide={onClose}>
+            <Modal show={showModal} onHide={onClose} dialogClassName="custom-modal-xl">
             <Modal.Header closeButton>
                 <Modal.Title>Processos Finalizados</Modal.Title>
             </Modal.Header>
             <Modal.Body>
-                <div>
-                    {this.state.processos.map(pdv => (
-                            <option key={pdv.id} value={pdv.id}>
-                            {pdv.nome}
-                            </option>
-                    ))}
+                <div className="row">
+                    <div className="col-md-12">
+                        <div className="bs-component">
+                            <ProcessosFinalizadosTable processosFinalizados={this.state.processos}/>
+                        </div>
+                    </div>
                 </div>
             </Modal.Body>
             <Modal.Footer>

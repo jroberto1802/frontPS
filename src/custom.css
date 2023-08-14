@@ -8,3 +8,8 @@ body{padding-top:120px}pre{background:#f7f7f9}@media (min-width: 768px){body>.na
     height: 40px; /* Ajuste a altura conforme necessário */
     /* Outras propriedades de estilo, se necessário */
   }
+
+  .custom-modal-xl {
+    max-width: 1500px; /* Defina a largura desejada para a modal */
+    margin: 1 auto;
+}
