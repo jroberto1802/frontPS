@@ -5,6 +5,7 @@ import { mensagemErro } from '../components/toastr'
 import { mensagemSucesso } from '../components/toastr'
 import ProcessosFinalizadosTable from './processosFinalizadosTable';
 
+
 export default class ProcessosFinalizadosModal extends React.Component{
 
     constructor(){
@@ -23,8 +24,13 @@ export default class ProcessosFinalizadosModal extends React.Component{
             pdvNome: ''
         };
     }
+
+    componentDidMount(){
+        this.listarProcessosFinalizados();
+    }
+
   
-    componentDidMount() {
+    listarProcessosFinalizados = () => {
         this.cadastroProcessoService.listarProcessosFechados().then(response => {
             this.setState({ processos: response.data });
           })

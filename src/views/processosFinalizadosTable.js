@@ -1,23 +1,37 @@
 import React from "react";
+import { mensagemSucesso } from '../components/toastr'
+import CadastroProcessoService from '../app/services/cadastroProcessoService';
 
-export default props => {
+const ProcessosFinalizadosTable = (props) => {
+    const cadastroProcessoService = new CadastroProcessoService();
 
-    const rows = props.processosFinalizados.map( processosFinalizados => {
-        return (
-            <tr>
-                <td>{processosFinalizados.nome}</td>
-                <td>{processosFinalizados.dataInicio}</td>
-                <td>{processosFinalizados.qtdVagas}</td>
-                <td>{processosFinalizados.tipoVaga}</td>
-                <td>{processosFinalizados.turnoVaga}</td>
-                <td>{processosFinalizados.pdv.nome}</td>
-                <td>{processosFinalizados.dataFinal}</td>
-                <td>
-                    <button type="button" className="btn btn-warning">Reabrir</button>
-                </td>
-            </tr>
-        )
-    })
+    const atualizarDataFinal = async (id) => {
+        const data = {
+            dataFinal: ''
+        };
+    
+        try {
+            await cadastroProcessoService.alterar(id, data);
+            mensagemSucesso(`Processo Seletivo ${id} reaberto com sucesso!`)
+        } catch (error) {
+            console.error("Erro na requisição PUT:", error);
+        }
+    }
+
+    const rows = props.processosFinalizados.map( processosFinalizados => (
+        <tr key={processosFinalizados.id}>
+            <td>{processosFinalizados.nome}</td>
+            <td>{processosFinalizados.dataInicio}</td>
+            <td>{processosFinalizados.qtdVagas}</td>
+            <td>{processosFinalizados.tipoVaga}</td>
+            <td>{processosFinalizados.turnoVaga}</td>
+            <td>{processosFinalizados.pdv.nome}</td>
+            <td>{processosFinalizados.dataFinal}</td>
+            <td>
+                <button onClick={() => atualizarDataFinal(processosFinalizados.id)} type="button" className="btn btn-warning">Reabrir</button>
+            </td>
+        </tr>
+    ));
 
     return (
         <div>
@@ -41,3 +55,5 @@ export default props => {
         </div>
     )
 }
+
+export default ProcessosFinalizadosTable;
