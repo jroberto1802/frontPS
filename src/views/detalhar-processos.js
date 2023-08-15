@@ -1,10 +1,9 @@
 import React from "react";
 import Card from "../components/card";
 import { withRouter } from 'react-router-dom'
-import { mensagemSucesso, mensagemErro } from '../components/toastr'
 import CadastroProcessoService from "../app/services/cadastroProcessoService";
 import FormGroup from "../components/form-group";
-import EntrevistaService from "../app/services/entrevistaService";
+import EntrevistaService from "../app/services/EntrevistaService";
 import EntrevistasTable from "./entrevistas-table";
 
 class DetalharProcessos extends React.Component {
@@ -15,8 +14,13 @@ class DetalharProcessos extends React.Component {
         this.state = {
             idProcessoSelecionado: null,
             processo: null,
-            listaEntrevistas:[] 
+            listaEntrevistas:[]
         }
+    }
+
+    formatarDataParaExibicao = (data) => {
+        const options = { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit', timeZone: 'America/Sao_Paulo' };
+        return new Date(data).toLocaleString('pt-BR', options);
     }
 
     componentDidMount() {
@@ -53,24 +57,24 @@ class DetalharProcessos extends React.Component {
 
         return (
             <div className="row">
-                <div className="col-lg-12" style={{position: 'relative'} }>
+                <div className="col-lg-11" style={{position: 'relative'} }>
                     {processo ? (
-                        <Card title={`Processo: ${processo.nome}`}>
-                                <div className="col-md-12">
-                                    <FormGroup label="Data de Início: *" htmlFor="inputDataInicio">
+                        <Card title={processo.nome}>
+                                <div className="col-md-10">
+                                    <FormGroup label="Data de Início" htmlFor="inputDataInicio">
                                         <input
                                             type="text"
                                             id="inputDataInicio"
                                             className="form-control"
                                             name="dataInicio"
-                                            value={`${processo.dataInicio}`}
+                                            value={this.formatarDataParaExibicao(processo.dataInicio)}
                                             readOnly
                                         />
                                     </FormGroup>
                                 </div>
                                 <div className="row">
                                 <div className="col-md-4">
-                                        <FormGroup label="Tipo da Vaga:" htmlFor="inputTipoVaga">
+                                        <FormGroup label="Tipo da Vaga" htmlFor="inputTipoVaga">
                                             <input
                                                 type="text"
                                                 id="inputTipoVaga"
@@ -81,8 +85,8 @@ class DetalharProcessos extends React.Component {
                                             />
                                         </FormGroup>
                                 </div>
-                                <div className="col-md-4">
-                                        <FormGroup label="Turno da Vaga: *" htmlFor="inputTurnoVaga">
+                                <div className="col-md-3">
+                                        <FormGroup label="Turno da Vaga" htmlFor="inputTurnoVaga">
                                             <input
                                                 type="text"
                                                 id="inputTurnoVaga"
@@ -93,8 +97,8 @@ class DetalharProcessos extends React.Component {
                                             />
                                         </FormGroup>
                                 </div>
-                                <div className="col-md-4">
-                                        <FormGroup label="Vagas: *" htmlFor="inputQtdVagas">
+                                <div className="col-md-3">
+                                        <FormGroup label="Vagas" htmlFor="inputQtdVagas">
                                             <input
                                                 type="text"
                                                 id="inputQtdVagas"
@@ -111,8 +115,8 @@ class DetalharProcessos extends React.Component {
                         <p>Carregando...</p>
                     )}
                 </div>
-                <br />
-                <div className="row">
+
+                <div className="row mt-4">
                     <div className="col-md-12">
                         <div className="bs-component">
                             <EntrevistasTable listaEntrevista={listaEntrevistas} />

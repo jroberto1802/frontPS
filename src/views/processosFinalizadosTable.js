@@ -16,6 +16,7 @@ const ProcessosFinalizadosTable = (props) => {
         } catch (error) {
             console.error("Erro na requisição PUT:", error);
         }
+        props.onCloseModal();
     }
 
     const rows = props.processosFinalizados.map( processosFinalizados => (

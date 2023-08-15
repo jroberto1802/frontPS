@@ -10,7 +10,7 @@ class Cardblock extends React.Component{
     render(){
         return(
             <div className="card text-white bg-primary mb-1" style={{ maxWidth: "12.1rem", marginBottom: "0.3rem" }}>
-                <div className="card-header">
+                <div className="card-header text-center">
                     <h5 className="header-title">{this.props.nome}</h5>
                 </div>
                 <div className="card-body">

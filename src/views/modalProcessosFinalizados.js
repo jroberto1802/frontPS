@@ -38,6 +38,10 @@ export default class ProcessosFinalizadosModal extends React.Component{
             console.error('Erro ao buscar a lista de Processos:', error);
           });
     }
+
+    fecharModal = () => {
+        this.props.onClose(); 
+    }
     
     render(){
         const { onClose, showModal } = this.props;
@@ -51,7 +55,7 @@ export default class ProcessosFinalizadosModal extends React.Component{
                 <div className="row">
                     <div className="col-md-12">
                         <div className="bs-component">
-                            <ProcessosFinalizadosTable processosFinalizados={this.state.processos}/>
+                            <ProcessosFinalizadosTable processosFinalizados={this.state.processos} onCloseModal={this.fecharModal}/>
                         </div>
                     </div>
                 </div>

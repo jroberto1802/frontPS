@@ -110,12 +110,12 @@ class Home extends React.Component{
                         <div style={{ display: 'flex', gap: '1rem' }}>
                         <a className="btn btn-primary btn-lg " 
                             role="button" onClick={this.abrirCadastroProcessoModal}>
-                            <i className="fa fa-users"></i>  
+                            <i className="fa fa-users" style={{ marginRight: '0.5em' }}></i>  
                             Novo Processo
                         </a>
                         <a className="btn btn-danger btn-lg mr-1" 
                             role="button" onClick={this.abrirProcessosFinalizadosModal}>
-                            <i className="fa fa-users"></i>  
+                            <i className="fas fa-archive" style={{ marginRight: '0.5em' }}></i>  
                             Processos Finalizados
                         </a>
                         </div>

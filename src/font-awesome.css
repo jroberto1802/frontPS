@@ -1,0 +1,5 @@
+@import '~@fortawesome/fontawesome-free/css/all.min.css';
+
+.navbar-brand i.fas.fa-house.fa-xl:hover {
+    color: #1fa887; /* Troque por sua cor desejada */
+}

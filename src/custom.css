@@ -13,3 +13,10 @@ body{padding-top:120px}pre{background:#f7f7f9}@media (min-width: 768px){body>.na
     max-width: 1300px; /* Defina a largura desejada para a modal */
     margin: 1 auto;
 }
+
+@import './font-awesome.css';
+
+
+.navbar-brand i.fas.fa-house.fa-xl:hover {
+  color: #1fa887; /* Troque por sua cor desejada */
+}
