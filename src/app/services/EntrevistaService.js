@@ -22,8 +22,8 @@ export default class EntrevistaService extends ApiService{
         return this.put(`/${id}`, obj)
     }
 
-    buscarByProcesso(processoId){
-        return this.get(`/${processoId}`);
+    buscarByProcesso(id){
+        return this.get(`/processo/${id}`);
     }
 
 }

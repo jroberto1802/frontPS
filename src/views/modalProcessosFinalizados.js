@@ -29,13 +29,12 @@ export default class ProcessosFinalizadosModal extends React.Component{
             this.setState({ processos: response.data });
           })
           .catch(error => {
-            console.error('Erro ao buscar a lista de PDVs:', error);
+            console.error('Erro ao buscar a lista de Processos:', error);
           });
     }
     
     render(){
         const { onClose, showModal } = this.props;
-
 
         return (
             <Modal show={showModal} onHide={onClose} dialogClassName="custom-modal-xl">

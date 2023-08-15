@@ -5,8 +5,7 @@ import ProcessosFinalizadosModal from "../views/modalProcessosFinalizados";
 import Cardblock from "../components/cardblock";
 import CadastroProcessoService from "../app/services/cadastroProcessoService";
 import { mensagemSucesso } from '../components/toastr'
-import processosFinalizadosTable from "./processosFinalizadosTable";
-import cadastroProcessos from "./cadastro-processos";
+
 
 
 class Home extends React.Component{
@@ -95,7 +94,7 @@ class Home extends React.Component{
                                             <button onClick={() => this.atualizarDataFinal(processo.id)} type="button" className="btn btn-danger btn-sm">Finalizar</button>
                                             <button onClick={() => {
                                                         this.setState({ idProcessoSelecionado: processo.id });
-                                                        this.props.history.push(`/cadastro-processos/${processo.id}`);
+                                                        this.props.history.push(`/detalhar-processos/${processo.id}`);
                                                         }}
                                                     type="button" 
                                                     className="btn btn-success btn-sm">Detalhar</button>

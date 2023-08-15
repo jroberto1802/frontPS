@@ -4,18 +4,19 @@ import { withRouter } from 'react-router-dom'
 import { mensagemSucesso, mensagemErro } from '../components/toastr'
 import CadastroProcessoService from "../app/services/cadastroProcessoService";
 import FormGroup from "../components/form-group";
+import EntrevistaService from "../app/services/entrevistaService";
+import EntrevistasTable from "./entrevistas-table";
 
-
-class CadastroProcessos extends React.Component {
+class DetalharProcessos extends React.Component {
     constructor() {
         super();
         this.CadastroProcessoService = new CadastroProcessoService();
-    }
-
-    state = {
-        idProcessoSelecionado: null,
-        processo: null,
-        listaEntrevistas: []
+        this.EntrevistaService = new EntrevistaService();
+        this.state = {
+            idProcessoSelecionado: null,
+            processo: null,
+            listaEntrevistas:[] 
+        }
     }
 
     componentDidMount() {
@@ -23,7 +24,8 @@ class CadastroProcessos extends React.Component {
         if (idProcessoSelecionado) {
             this.setState({ idProcessoSelecionado });
         }
-        this.buscarPorId(idProcessoSelecionado);
+        this.buscarPorId(idProcessoSelecionado)
+        this.buscarEntrevistaPorProcessoId(idProcessoSelecionado)
     }
 
     buscarPorId = (id) => {
@@ -36,12 +38,22 @@ class CadastroProcessos extends React.Component {
         }    
     }
 
+    buscarEntrevistaPorProcessoId = (id) => {
+        try {
+            this.EntrevistaService.buscarByProcesso(id).then(response => {
+                this.setState({ listaEntrevistas: response.data });
+            });
+        } catch (error) {
+            console.error('Erro ao buscar Processo por Id:', error);
+        }    
+    }
+
     render() {
-        const { processo } = this.state;
+        const { processo, listaEntrevistas } = this.state;
 
         return (
             <div className="row">
-                <div className="col-lg-6" style={{position: 'relative'} }>
+                <div className="col-lg-12" style={{position: 'relative'} }>
                     {processo ? (
                         <Card title={`Processo: ${processo.nome}`}>
                                 <div className="col-md-12">
@@ -99,12 +111,17 @@ class CadastroProcessos extends React.Component {
                         <p>Carregando...</p>
                     )}
                 </div>
-                <div>
-                                
-                </div>       
+                <br />
+                <div className="row">
+                    <div className="col-md-12">
+                        <div className="bs-component">
+                            <EntrevistasTable listaEntrevista={listaEntrevistas} />
+                        </div>
+                    </div>      
+                </div>    
             </div>
         )
     }
 }
 
-export default withRouter(CadastroProcessos);
+export default withRouter(DetalharProcessos);
