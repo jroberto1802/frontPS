@@ -108,16 +108,16 @@ class Home extends React.Component{
                     <p>E essa é sua área administrativa, utilize um dos menus ou botões abaixo para navegar pelo sistema.</p>
                     <p className="lead">
                         <div style={{ display: 'flex', gap: '1rem' }}>
-                        <a className="btn btn-primary btn-lg " 
-                            role="button" onClick={this.abrirCadastroProcessoModal}>
-                            <i className="fa fa-users" style={{ marginRight: '0.5em' }}></i>  
-                            Novo Processo
-                        </a>
-                        <a className="btn btn-danger btn-lg mr-1" 
-                            role="button" onClick={this.abrirProcessosFinalizadosModal}>
-                            <i className="fas fa-archive" style={{ marginRight: '0.5em' }}></i>  
-                            Processos Finalizados
-                        </a>
+                            <a className="btn btn-primary btn-lg " 
+                                role="button" onClick={this.abrirCadastroProcessoModal}>
+                                <i className="fa fa-users" style={{ marginRight: '0.5em' }}></i>  
+                                Novo Processo
+                            </a>
+                            <a className="btn btn-danger btn-lg mr-1" 
+                                role="button" onClick={this.abrirProcessosFinalizadosModal}>
+                                <i className="fas fa-archive" style={{ marginRight: '0.5em' }}></i>  
+                                Processos Finalizados
+                            </a>
                         </div>
                         {this.state.modalCadastroProcesso && (
                             <CadastroProcessoModal

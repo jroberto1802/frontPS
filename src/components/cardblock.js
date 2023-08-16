@@ -15,7 +15,7 @@ class Cardblock extends React.Component{
                 </div>
                 <div className="card-body">
                     <div className="card-text1">{this.props.tipoVaga}</div>
-                    <div className="card-text3">Início em: {this.formatarDataParaExibicao(Date(this.props.dataInicio))}</div>
+                    <div className="card-text3">Início em: {this.formatarDataParaExibicao(this.props.dataInicio)}</div>
                     <div className="card-text4">{this.props.qtdVagas} Vagas</div>
                 </div>
                 <div className="card-footer" style={{ display: 'flex', gap: '1rem' }}>

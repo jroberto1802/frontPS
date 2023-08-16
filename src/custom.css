@@ -16,7 +16,14 @@ body{padding-top:120px}pre{background:#f7f7f9}@media (min-width: 768px){body>.na
 
 @import './font-awesome.css';
 
-
 .navbar-brand i.fas.fa-house.fa-xl:hover {
   color: #1fa887; /* Troque por sua cor desejada */
+}
+
+.yellow-square-button {
+  border: none;
+  border-radius: 0;
+  padding: 23px 15px;
+  font-size: 18px;
+  cursor: pointer;
 }
