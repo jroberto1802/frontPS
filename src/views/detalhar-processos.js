@@ -25,7 +25,10 @@ class DetalharProcessos extends React.Component {
     }
 
     fecharLancarEntrevistaModal = () => {
-        this.setState({ modalLancarEntrevista: false });
+        this.setState({ modalLancarEntrevista: false }, () => {
+            const { idProcessoSelecionado } = this.state;
+            this.buscarEntrevistaPorProcessoId(idProcessoSelecionado);
+        });
     }
 
     formatarDataParaExibicao = (data) => {
@@ -156,7 +159,7 @@ class DetalharProcessos extends React.Component {
                             <LancarEntrevistaModal
                                 showModal={true}
                                 onClose={this.fecharLancarEntrevistaModal}
-                                processoId={processo.id}
+                                processo={processo}
                             />
                 )}
             </div>

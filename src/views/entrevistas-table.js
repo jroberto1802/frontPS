@@ -1,4 +1,5 @@
 import React from 'react';
+import Card from '../components/card';
 
 
 export default props => {
@@ -11,7 +12,7 @@ export default props => {
     const gerarLinkWhatsapp = (listaEntrevista) => {
         if (listaEntrevista && listaEntrevista.candidato && listaEntrevista.candidato.fone) {
             const numeroTelefone = listaEntrevista.candidato.fone;
-            const mensagem = 'Boa tarde! Segue o link para participação no treinamento de Análise de Estrutura do Softshop. https://meet.google.com/tev-dctv-sce Favor baixar o material que está em:https://drive.google.com/file/d/1LrZBU0OVRwZHC2CfuFK-LDUaLcGNn4px/view?usp=sharing'; // Substitua pelo texto da sua mensagem
+            const mensagem = 'Boa tarde! Segue o link para participação no treinamento de Análise de Estrutura do Softshop. https://meet.google.com/tev-dctv-sce Favor baixar o material que está em:https://drive.google.com/file/d/1LrZBU0OVRwZHC2CfuFK-LDUaLcGNn4px/view?usp=sharing';
             const linkWhatsapp = `https://web.whatsapp.com/send/?phone=${numeroTelefone}&text=${encodeURIComponent(mensagem)}&type=phone_number&app_absent=0`;
             return linkWhatsapp;
         }
@@ -20,7 +21,9 @@ export default props => {
 
     const rows = props.listaEntrevista.map(listaEntrevista => {
         const linkWhatsapp = gerarLinkWhatsapp(listaEntrevista);
+
         return(
+            
             <tr key={listaEntrevista.id}>
                 <td>{listaEntrevista.candidato.nomeCompleto}</td>
                 <td>{formatarDataParaExibicao(listaEntrevista.data)}</td>
@@ -38,6 +41,7 @@ export default props => {
             </tr>
         )
     })
+
 
     return (
         <div>

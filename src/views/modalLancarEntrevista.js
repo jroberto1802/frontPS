@@ -9,14 +9,13 @@ import FormGroup from '../components/form-group';
 
 export default class LancarEntrevistaModal extends React.Component{
 
-    constructor(){
-        super();
+    constructor(props){
+        super(props);
         const dataAtual = new Date();
-        dataAtual.setHours(dataAtual.getHours() - 3);
         this.CandidatoService = new CandidatoService();
         this.EntrevistaService = new EntrevistaService();
         this.state = {
-            processoid: this.props.processoid,
+            processo: this.props.processo,
             data: dataAtual.toISOString().slice(0, 19)+'Z',
             obs: '',
             mensagemErro: '',
@@ -31,9 +30,6 @@ export default class LancarEntrevistaModal extends React.Component{
         return new Date(data).toLocaleString('pt-BR', options);
     }
 
-    componentDidMount(){
-        
-    }
 
     fecharModal = () => {
         this.props.onClose(); 
@@ -50,40 +46,41 @@ export default class LancarEntrevistaModal extends React.Component{
     }
 
 
-    cadastrarCandidato = () => {
-
+    cadastrarCandidato = async () => {
         const msgs = this.validar();
- 
-        if(msgs && msgs.length >0){
-             msgs.forEach((msg, index) => {
-                 mensagemErro(msg)
-             })
-             return false;
+    
+        if (msgs && msgs.length > 0) {
+            msgs.forEach((msg, index) => {
+                mensagemErro(msg);
+            });
+            return null;
         }
-
- 
+    
         const candidato = {
             fone: this.state.candidatoFone,
             nomeCompleto: this.state.candidatoNome,
-	        idade: '',
+            idade: '',
             logradouro: '',
             cep: '',
             cidade: '',
             uf: '',
             periodoAtual: '',
-            turnoFaculdade: '',
-            sttCandidato: ''
+            turnoFaculdade: 'INDEFINIDO',
+            sttCandidato: 'EM_PROCESSO'
+        };
+    
+        try {
+            const response = await this.CandidatoService.cadastrar(candidato);
+            mensagemSucesso('Candidato cadastrado com sucesso!');
+            return response.data;
+        } catch (erro) {
+            this.setState({ mensagemErro: erro.response });
+            mensagemErro(erro.response);
+            return null;
         }
- 
-        this.CandidatoService.cadastrar(candidato).then( response => {
-                 mensagemSucesso('Candidato cadastrado com sucesso!')
-             }).catch( erro => {
-                 this.setState({mensagemErro: erro.response})
-                 mensagemErro(erro.response)
-             })     
-     }
+    }; 
 
-    cadastrarEntrevista = () => {
+    cadastrarEntrevista = async () => {
 
         const msgs = this.validar();
  
@@ -95,14 +92,21 @@ export default class LancarEntrevistaModal extends React.Component{
         }
 
         const processoMontado = {
-            id: this.state.processoid
+            id: this.state.processo.id,
+            tipoVaga: this.state.processo.tipoVaga,
+	        turnoVaga: this.state.processo.turnoVaga
         }
 
- 
+        const candidatoMontado = await this.cadastrarCandidato();
+
         const entrevista = {
             data: this.state.data,
             processo: processoMontado,
-            candidato: this.cadastrarCandidato(),
+            candidato: { 
+                id: candidatoMontado.id,
+                turnoFaculdade: candidatoMontado.turnoFaculdade,
+                sttCandidato: candidatoMontado.sttCandidato
+            },
             diccao: '',
             girias: '',
             postura: '',
