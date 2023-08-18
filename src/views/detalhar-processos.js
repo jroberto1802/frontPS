@@ -141,8 +141,8 @@ class DetalharProcessos extends React.Component {
                 <div className="row mt-3">
                     <div className="col-md-12 text-right">
                         <div className="bs-component">
-                            <button className="btn btn-warning btn-lg rounded" onClick={this.abrirLancarEntrevistaModal}>
-                                <div className="text-center"><i className="fas fa-plus"></i> Entrevista </div>
+                            <button className="btn btn-warning btn-lg" onClick={this.abrirLancarEntrevistaModal} style={{float: 'right'}}>
+                                <div className="text-center"><i className="fa-solid fa-plus-circle"></i> <span class="hidden-xs">&nbsp;&nbsp;Entrevista</span> </div>
                             </button>
                         </div>
                     </div>

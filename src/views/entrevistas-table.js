@@ -1,6 +1,5 @@
 import React from 'react';
-import Card from '../components/card';
-
+import StatusLED from '../components/ledstatus';
 
 export default props => {
 
@@ -25,10 +24,13 @@ export default props => {
         return(
             
             <tr key={listaEntrevista.id}>
-                <td>{listaEntrevista.candidato.nomeCompleto}</td>
-                <td>{formatarDataParaExibicao(listaEntrevista.data)}</td>
-                <td>{listaEntrevista.obs}</td>
-                <td>
+                <td style={{ verticalAlign: 'middle', textAlign: 'center' }}>
+                    <StatusLED status={listaEntrevista.candidato.sttCandidato} />
+                </td>
+                <td style={{ verticalAlign: 'middle', textAlign: 'center' }}>{listaEntrevista.candidato.nomeCompleto}</td>
+                <td style={{ verticalAlign: 'middle', textAlign: 'center' }}>{formatarDataParaExibicao(listaEntrevista.data)}</td>
+                <td style={{ verticalAlign: 'middle', textAlign: 'center' }}>{listaEntrevista.obs}</td>
+                <td style={{ verticalAlign: 'middle', textAlign: 'center' }}>
                 {linkWhatsapp ? (
                     <a className="btn btn-success btn-md" role="button" href={linkWhatsapp}>
                     <i className="fab fa-whatsapp" style={{ marginRight: '0.5em' }}/> 
@@ -48,10 +50,11 @@ export default props => {
             <table className="table table-hover">
                 <thead>
                     <tr>
-                        <th scope="col">Candidato</th>
-                        <th scope="col">Data</th>
-                        <th scope="col">Observação</th>
-                        <th scope="col">Ações</th>
+                        <th scope="col" style={{ verticalAlign: 'middle', textAlign: 'center' }}>Status</th>
+                        <th scope="col" style={{ verticalAlign: 'middle', textAlign: 'center' }}>Candidato</th>
+                        <th scope="col" style={{ verticalAlign: 'middle', textAlign: 'center' }}>Data</th>
+                        <th scope="col" style={{ verticalAlign: 'middle', textAlign: 'center' }}>Observação</th>
+                        <th scope="col" style={{ verticalAlign: 'middle', textAlign: 'center' }}>Ações</th>
                     </tr>
                 </thead>
                 <tbody>
