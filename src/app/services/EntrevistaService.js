@@ -26,4 +26,8 @@ export default class EntrevistaService extends ApiService{
         return this.get(`/processo/${id}`);
     }
 
+    deletar(id){
+        return this.delete(`/${id}`)
+    }
+
 }

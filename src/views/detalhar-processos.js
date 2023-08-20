@@ -4,6 +4,7 @@ import { withRouter } from 'react-router-dom'
 import CadastroProcessoService from "../app/services/cadastroProcessoService";
 import FormGroup from "../components/form-group";
 import EntrevistaService from "../app/services/EntrevistaService";
+import MensagemService from "../app/services/MensagemService";
 import EntrevistasTable from "./entrevistas-table";
 import LancarEntrevistaModal from "./modalLancarEntrevista";
 
@@ -12,13 +13,17 @@ class DetalharProcessos extends React.Component {
         super();
         this.CadastroProcessoService = new CadastroProcessoService();
         this.EntrevistaService = new EntrevistaService();
+        this.MensagemService = new MensagemService();
         this.state = {
             idProcessoSelecionado: null,
             processo: null,
             listaEntrevistas:[],
             modalLancarEntrevista: false,
+            listaMensagens: []
         }
     }
+
+
 
     abrirLancarEntrevistaModal = () => {
         this.setState({ modalLancarEntrevista: true });
@@ -36,13 +41,23 @@ class DetalharProcessos extends React.Component {
         return new Date(data).toLocaleString('pt-BR', options);
     }
 
+    buscarMensagens() {
+        this.MensagemService.listar().then(response => {
+            this.setState({ listaMensagens: response.data });
+          })
+          .catch(error => {
+            console.error('Erro ao buscar a lista de Mensagens:', error);
+          });
+    }
+
     componentDidMount() {
         const { idProcessoSelecionado } = this.props.match.params;
         if (idProcessoSelecionado) {
             this.setState({ idProcessoSelecionado });
         }
-        this.buscarPorId(idProcessoSelecionado)
-        this.buscarEntrevistaPorProcessoId(idProcessoSelecionado)
+        this.buscarPorId(idProcessoSelecionado);
+        this.buscarEntrevistaPorProcessoId(idProcessoSelecionado);
+        this.setState({listaMensagens: this.buscarMensagens()})
     }
 
     buscarPorId = (id) => {
@@ -66,7 +81,7 @@ class DetalharProcessos extends React.Component {
     }
 
     render() {
-        const { processo, listaEntrevistas } = this.state;
+        const { processo, listaEntrevistas, listaMensagens } = this.state;
 
         return (
             <div className="row">
@@ -141,8 +156,8 @@ class DetalharProcessos extends React.Component {
                 <div className="row mt-3">
                     <div className="col-md-12 text-right">
                         <div className="bs-component">
-                            <button className="btn btn-warning btn-lg" onClick={this.abrirLancarEntrevistaModal} style={{float: 'right'}}>
-                                <div className="text-center"><i className="fa-solid fa-plus-circle"></i> <span class="hidden-xs">&nbsp;&nbsp;Entrevista</span> </div>
+                            <button className="btn btn-warning btn-lg" onClick={this.abrirLancarEntrevistaModal}>
+                                <div className="text-center"><i className="fa-solid fa-plus-circle"></i> <span className="hidden-xs">&nbsp;&nbsp;Entrevista</span> </div>
                             </button>
                         </div>
                     </div>
@@ -151,7 +166,7 @@ class DetalharProcessos extends React.Component {
                 <div className="row mt-3">
                     <div className="col-md-12">
                         <div className="bs-component">
-                            <EntrevistasTable listaEntrevista={listaEntrevistas} />
+                            <EntrevistasTable listaEntrevista={listaEntrevistas} listaMensagens={listaMensagens} processo={processo} />
                         </div>
                     </div>      
                 </div>    

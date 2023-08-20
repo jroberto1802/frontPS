@@ -5,6 +5,7 @@ import Home from '../views/home'
 import detalharProcessos from '../views/detalhar-processos'
 import { Route, Switch, HashRouter } from 'react-router-dom'
 import cadastroQuestionario from '../views/cadastro-questionario'
+import cadastroMensagem from '../views/cadastro-mensagem'
 
 function Rotas(){
     return (
@@ -14,6 +15,7 @@ function Rotas(){
                 <Route path="/cadastro-pdv" component={CadastroPDV} />
                 <Route path="/cadastro-questionario" component={cadastroQuestionario} />
                 <Route path="/detalhar-processos/:idProcessoSelecionado" component={detalharProcessos} />
+                <Route path="/cadastro-mensagens" component={cadastroMensagem} />
             </Switch>
         </HashRouter>
     )

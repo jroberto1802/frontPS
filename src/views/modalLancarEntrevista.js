@@ -2,9 +2,11 @@ import React from 'react';
 import { Button, Modal, Form } from 'react-bootstrap';
 import EntrevistaService from '../app/services/EntrevistaService'; 
 import CandidatoService from '../app/services/CandidatoService';
-import { mensagemErro } from '../components/toastr'
-import { mensagemSucesso } from '../components/toastr'
+import { mensagemErro, mensagemSucesso } from '../components/toastr'
 import FormGroup from '../components/form-group';
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
+import ptBR from 'date-fns/locale/pt-BR';
 
 
 export default class LancarEntrevistaModal extends React.Component{
@@ -16,7 +18,7 @@ export default class LancarEntrevistaModal extends React.Component{
         this.EntrevistaService = new EntrevistaService();
         this.state = {
             processo: this.props.processo,
-            data: dataAtual.toISOString().slice(0, 19)+'Z',
+            dataSelecionada: dataAtual,
             obs: '',
             mensagemErro: '',
             candidatoNome: '',
@@ -100,7 +102,7 @@ export default class LancarEntrevistaModal extends React.Component{
         const candidatoMontado = await this.cadastrarCandidato();
 
         const entrevista = {
-            data: this.state.data,
+            data: this.state.dataSelecionada,
             processo: processoMontado,
             candidato: { 
                 id: candidatoMontado.id,
@@ -132,14 +134,20 @@ export default class LancarEntrevistaModal extends React.Component{
                 <Modal.Title>Lançar Nova Entrevista</Modal.Title>
             </Modal.Header>
             <Modal.Body>
-            <Form>
-                    <FormGroup label="Data de início: " htmlFor="inputDataInicio">
-                        <input type="text"
-                                id="inputDataInicio"
-                                className="form-control"
-                                name="dataInicio"
-                                value={this.formatarDataParaExibicao(Date(this.state.dataInicio))}
-                                readOnly/>
+                <Form>
+                    <FormGroup label="Data de início:  " htmlFor="inputDataInicio">
+                        <DatePicker
+                            id="inputDataInicio"
+                            selected={this.state.dataSelecionada}
+                            onChange={(date) => this.setState({ dataSelecionada: date })}
+                            showTimeSelect
+                            timeFormat="HH:mm"
+                            timeIntervals={15}
+                            dateFormat="dd/MM/yyyy, HH:mm"
+                            timeCaption="Hora"
+                            className="form-control"
+                            locale={ptBR}
+                        />
                     </FormGroup>
 
                     <FormGroup label="Nome do Candidato: *" htmlFor="inputNomeCompleto">
