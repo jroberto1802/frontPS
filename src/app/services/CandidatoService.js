@@ -22,4 +22,8 @@ export default class CandidatoService extends ApiService{
         return this.put(`/${id}`, obj)
     }
 
+    deletar(id){
+        return this.delete(`/${id}`)
+    }
+
 }

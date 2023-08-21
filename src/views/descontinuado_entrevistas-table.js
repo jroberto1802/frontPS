@@ -54,7 +54,7 @@ export default props => {
 
     const rows = props.listaEntrevista.map(listaEntrevista => {
         const selectedMessage = selectedMessages[listaEntrevista.id];
-        const linkWhatsapp = gerarLinkWhatsapp(props.processo, listaEntrevista, selectedMessage);
+        const linkWhatsapp = gerarLinkWhatsapp(this.state.processo, listaEntrevista, selectedMessage);
 
         return(
             <tr key={listaEntrevista.id}>
@@ -83,13 +83,10 @@ export default props => {
                             </Form.Group>
                         </div>
                         <div className="col-md-2" style={{ padding: '0px' }} > 
-                            {linkWhatsapp ? (
+
                                 <a className="btn btn-success btn-md" role="button" href={linkWhatsapp} target="_blank">
                                     <i className="fab fa-whatsapp"/>
                                 </a>
-                            ) : (
-                                <button disabled>Enviar Mensagem</button>
-                            )}
                         </div>
                     </div>
                 </td>

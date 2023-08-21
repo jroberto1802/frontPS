@@ -1,12 +1,16 @@
 import React from "react";
+import { Form } from 'react-bootstrap';
 import Card from "../components/card";
 import { withRouter } from 'react-router-dom'
 import CadastroProcessoService from "../app/services/cadastroProcessoService";
 import FormGroup from "../components/form-group";
 import EntrevistaService from "../app/services/EntrevistaService";
+import CandidatoService from "../app/services/CandidatoService";
 import MensagemService from "../app/services/MensagemService";
-import EntrevistasTable from "./entrevistas-table";
 import LancarEntrevistaModal from "./modalLancarEntrevista";
+import StatusLED from "../components/ledstatus";
+import { mensagemErro, mensagemSucesso } from '../components/toastr'
+import { Tooltip } from "react-tooltip";
 
 class DetalharProcessos extends React.Component {
     constructor() {
@@ -14,16 +18,27 @@ class DetalharProcessos extends React.Component {
         this.CadastroProcessoService = new CadastroProcessoService();
         this.EntrevistaService = new EntrevistaService();
         this.MensagemService = new MensagemService();
+        this.CandidatoService = new CandidatoService();
         this.state = {
             idProcessoSelecionado: null,
             processo: null,
             listaEntrevistas:[],
             modalLancarEntrevista: false,
-            listaMensagens: []
+            listaMensagens: [],
+            menssagemSelecionada: '',
+            candidatoSelecionado: null
         }
     }
 
-
+    componentDidMount() {
+        const { idProcessoSelecionado } = this.props.match.params;
+        if (idProcessoSelecionado) {
+            this.setState({ idProcessoSelecionado });
+        }
+        this.buscarProcessoPorId(idProcessoSelecionado);
+        this.buscarEntrevistaPorProcessoId(idProcessoSelecionado);
+        this.setState({listaMensagens: this.buscarMensagens()})
+    }
 
     abrirLancarEntrevistaModal = () => {
         this.setState({ modalLancarEntrevista: true });
@@ -50,17 +65,7 @@ class DetalharProcessos extends React.Component {
           });
     }
 
-    componentDidMount() {
-        const { idProcessoSelecionado } = this.props.match.params;
-        if (idProcessoSelecionado) {
-            this.setState({ idProcessoSelecionado });
-        }
-        this.buscarPorId(idProcessoSelecionado);
-        this.buscarEntrevistaPorProcessoId(idProcessoSelecionado);
-        this.setState({listaMensagens: this.buscarMensagens()})
-    }
-
-    buscarPorId = (id) => {
+    buscarProcessoPorId = (id) => {
         try {
             this.CadastroProcessoService.buscarId(id).then(response => {
                 this.setState({ processo: response.data });
@@ -70,18 +75,152 @@ class DetalharProcessos extends React.Component {
         }    
     }
 
-    buscarEntrevistaPorProcessoId = (id) => {
+    formatarDataParaExibicaoTable = (data) => {
+        const options = { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit', timeZone: 'America/Sao_Paulo' };
+        const dataFormatada = new Date(data).toLocaleString('pt-BR', options);
+        
+        const partesData = dataFormatada.split(' ');
+        const dataFormatoFinal = `${partesData[0]} às ${partesData[1]}`;
+        
+        return dataFormatoFinal;
+    }
+
+    buscarEntrevistaPorProcessoId = async (id) => {
         try {
-            this.EntrevistaService.buscarByProcesso(id).then(response => {
-                this.setState({ listaEntrevistas: response.data });
-            });
+            const response = await this.EntrevistaService.buscarByProcesso(id);
+            this.setState({ listaEntrevistas: response.data });
         } catch (error) {
-            console.error('Erro ao buscar Processo por Id:', error);
+            console.error('Erro ao buscar entrevistas por processo:', error);
         }    
     }
 
+    handleMensagemChange = (e, linhaId) => {
+        const menssagemAtualizada = { ...this.state.menssagemSelecionada };
+        menssagemAtualizada[linhaId] = e.target.value;
+        this.setState({menssagemSelecionada: menssagemAtualizada});
+    };
+
+    formatarMensagem = (processo, listaEntrevista, mensagem) => {
+        if (mensagem.includes('!nome!')) {
+            mensagem = mensagem.replace('!nome!', listaEntrevista.candidato.nomeCompleto);
+        }
+        if (mensagem.includes('!tipoVaga!')) {
+            mensagem = mensagem.replace('!tipoVaga!', processo.tipoVaga);
+        }
+        if (mensagem.includes('!pdv.nome!')) {
+            mensagem = mensagem.replace('!pdv.nome!', processo.pdv.nome);
+        }
+        if (mensagem.includes('!data!')) {
+            mensagem = mensagem.replace('!data!', this.formatarDataParaExibicaoTable(listaEntrevista.data));
+        }
+        return mensagem;
+    };
+    
+
+    gerarLinkWhatsapp = (processo, listaEntrevista, mensagem) => {
+        if (listaEntrevista && listaEntrevista.candidato && listaEntrevista.candidato.fone) {
+            const numeroTelefone = listaEntrevista.candidato.fone;
+            const linkWhatsapp = `https://web.whatsapp.com/send/?phone=${numeroTelefone}&text=${encodeURIComponent(mensagem)}&type=phone_number&app_absent=0`;
+            return this.formatarMensagem(processo, listaEntrevista, linkWhatsapp); 
+        }
+        return null;
+    };
+
+    deletarEntrevistaCandidato = async (entrevistaId, candidatoId) => {
+        const confirmarDelete = window.confirm("Tem certeza de que deseja deletar esta entrevista e candidato?");
+    
+        if (!confirmarDelete) {
+            return; 
+        }
+    
+        try {
+            await this.EntrevistaService.deletar(entrevistaId);
+            mensagemSucesso('Entrevista deletada com sucesso!');
+            
+            this.buscarEntrevistaPorProcessoId(this.state.idProcessoSelecionado);
+        } catch (error) {
+            console.error('Não foi possível deletar a entrevista', error);
+            mensagemErro(`Não foi possível deletar a entrevista: ${error}`);
+        }
+    
+        try {
+            await this.CandidatoService.deletar(candidatoId);
+            mensagemSucesso('Candidato deletado com sucesso!');
+        } catch (error) {
+            console.error('Não foi possível deletar o candidato', error);
+            mensagemErro(`Não foi possível deletar o candidato: ${error}`);
+        }
+    }
+
+    rows = () => this.state.listaEntrevistas.map(listaEntrevista => {
+        const menssagemSelecionada = this.state.menssagemSelecionada[listaEntrevista.id];
+        const linkWhatsapp = this.gerarLinkWhatsapp(this.state.processo, listaEntrevista, menssagemSelecionada);
+
+        return(
+            <tr key={listaEntrevista.id}>
+                <td style={{ verticalAlign: 'middle', textAlign: 'center' }}>
+                    <StatusLED status={listaEntrevista.candidato.sttCandidato} />
+                </td>
+                <td style={{ verticalAlign: 'middle', textAlign: 'left' }}>{listaEntrevista.candidato.nomeCompleto}</td>
+                <td style={{ verticalAlign: 'middle', textAlign: 'left' }}>{this.formatarDataParaExibicaoTable(listaEntrevista.data)}</td>
+                <td style={{ verticalAlign: 'middle', textAlign: 'left' }}>{listaEntrevista.obs}</td>
+                <td style={{ verticalAlign: 'middle', textAlign: 'center' }}>
+                    <div className="row" style={{ margin: '0px' }}>
+                        <div className="col-md-9" style={{ padding: '0px' }}>
+                            <Form.Group controlId={`inputMensagem-${listaEntrevista.id}`} htmlFor={`inputMensagem-${listaEntrevista.id}`} className="mb-0">
+                                <Form.Control
+                                    as="select"
+                                    value={this.state.menssagemSelecionada[listaEntrevista.id] || ""}
+                                    onChange={(e) => this.handleMensagemChange(e, listaEntrevista.id)}
+                                >
+                                    <option value="">Selecione...</option>
+                                    {this.state.listaMensagens.map(mensagem => (
+                                        <option key={mensagem.id} value={mensagem.corpo}>
+                                            {mensagem.assunto}
+                                        </option>
+                                    ))}
+                                </Form.Control>
+                            </Form.Group>
+                        </div>
+
+                        <div className="col-md-3" style={{ padding: '0px' }} > 
+                            {linkWhatsapp ? (
+                                <a className="btn btn-success btn-md" 
+                                role="button" href={linkWhatsapp} 
+                                target="_blank">
+                                    <i className="fab fa-whatsapp fa-xl"/>
+                                </a>
+                            ) : (
+                                <button disabled>Enviar Mensagem</button>
+                            )}
+                        </div>
+
+                    </div>
+                </td>
+                <td style={{ verticalAlign: 'middle', textAlign: 'center' }}>
+                    <div className="row" style={{ margin: '0px' }}>
+                        <div className="col-md-6" style={{ padding: '0px', cursor: 'pointer' }}>
+                            <a >
+                                <i className="fa-solid fa-pen-to-square fa-xl" style={{color: "#e4b611",}} />               
+                            </a>
+                        </div>
+                        <div className="col-md-6" style={{ padding: '0px', cursor: 'pointer' }}>
+                            <a onClick={() => {
+                                this.deletarEntrevistaCandidato(listaEntrevista.id, listaEntrevista.candidato.id);
+                                
+                            }}>
+                                <i className="fa-solid fa-trash fa-xl" style={{color: "#db0a0a"}} />
+                            </a>
+                        </div>
+                    </div>
+                </td>
+
+            </tr>
+        )
+    })
+
     render() {
-        const { processo, listaEntrevistas, listaMensagens } = this.state;
+        const { processo } = this.state;
 
         return (
             <div className="row">
@@ -164,11 +303,23 @@ class DetalharProcessos extends React.Component {
                 </div>
 
                 <div className="row mt-3">
-                    <div className="col-md-12">
-                        <div className="bs-component">
-                            <EntrevistasTable listaEntrevista={listaEntrevistas} listaMensagens={listaMensagens} processo={processo} />
-                        </div>
-                    </div>      
+                    <div>
+                        <table className="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th scope="col" style={{ verticalAlign: 'middle', textAlign: 'center' }}>Status</th>
+                                    <th scope="col" style={{ verticalAlign: 'middle', textAlign: 'left' }}>Candidato</th>
+                                    <th scope="col" style={{ verticalAlign: 'middle', textAlign: 'left' }}>Data</th>
+                                    <th scope="col" style={{ verticalAlign: 'middle', textAlign: 'left' }}>Observação</th>
+                                    <th scope="col" style={{ verticalAlign: 'middle', textAlign: 'left' }}>Mensagem</th>
+                                    <th scope="col" style={{ verticalAlign: 'middle', textAlign: 'center' }}>Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {this.rows()}
+                            </tbody>
+                        </table>
+                    </div>
                 </div>    
                 {this.state.modalLancarEntrevista && (
                             <LancarEntrevistaModal
