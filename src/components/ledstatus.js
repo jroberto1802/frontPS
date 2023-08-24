@@ -17,7 +17,7 @@ const StatusLED = ({ status }) => {
       break;
     case 'DESISTIU':
       icon = faExclamationCircle;
-      color = '#ffc107';
+      color = '#f49c14';
       break;
     case 'EM_PROCESSO':
       icon = faPlayCircle;

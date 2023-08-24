@@ -23,9 +23,43 @@ export default class LancarEntrevistaModal extends React.Component{
             mensagemErro: '',
             candidatoNome: '',
             candidatoFone: '',
-            candidato: null
+            candidato: null,
+            candidatoEditar: null,
+            entrevistaEditar: null
         };
     }
+
+    componentDidMount() {
+        if (this.props.editar) {
+            this.carregarDadosEditar();
+        }
+    }
+    
+    async carregarDadosEditar() {
+        try {
+            const candidatoResponse = await this.CandidatoService.buscarId(this.props.candidatoSelecionado);
+            const entrevistaResponse = await this.EntrevistaService.buscarId(this.props.entrevistaSelecionada);
+    
+            this.setState({
+                candidatoEditar: candidatoResponse.data,
+                entrevistaEditar: entrevistaResponse.data
+            }, () => {
+                this.inicializarCampos();
+            });
+        } catch (error) {
+            console.error('Erro ao buscar dados para edição:', error);
+        }
+    }
+    
+    inicializarCampos() {
+        this.setState({
+            candidatoNome: this.state.candidatoEditar.nomeCompleto,
+            candidatoFone: this.state.candidatoEditar.fone,
+            obs: this.state.entrevistaEditar ? this.state.entrevistaEditar.obs : '',
+            dataSelecionada: new Date(this.state.entrevistaEditar.data)
+        });
+    }
+    
 
     formatarDataParaExibicao = (data) => {
         const options = { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit', timeZone: 'America/Sao_Paulo' };
@@ -80,23 +114,51 @@ export default class LancarEntrevistaModal extends React.Component{
             mensagemErro(erro.response);
             return null;
         }
-    }; 
+    };
+
+    editarCandidato = async (id) => {
+        const msgs = this.validar();
+    
+        if (msgs && msgs.length > 0) {
+            msgs.forEach((msg, index) => {
+                mensagemErro(msg);
+            });
+            return null;
+        }
+    
+        const candidato = {
+            fone: this.state.candidatoFone,
+            nomeCompleto: this.state.candidatoNome,
+            turnoFaculdade: this.state.candidatoEditar.turnoFaculdade,
+            sttCandidato: this.state.candidatoEditar.sttCandidato
+        };
+    
+        try {
+            const response = await this.CandidatoService.alterar(id, candidato);
+            mensagemSucesso('Candidato alterado com sucesso!');
+            return response.data;
+        } catch (erro) {
+            this.setState({ mensagemErro: erro.response });
+            mensagemErro(erro.response);
+            return null;
+        }
+    };
 
     cadastrarEntrevista = async () => {
 
         const msgs = this.validar();
- 
+    
         if(msgs && msgs.length >0){
-             msgs.forEach((msg, index) => {
-                 mensagemErro(msg)
-             })
-             return false;
+            msgs.forEach((msg, index) => {
+                mensagemErro(msg)
+            })
+            return false;
         }
 
         const processoMontado = {
             id: this.state.processo.id,
             tipoVaga: this.state.processo.tipoVaga,
-	        turnoVaga: this.state.processo.turnoVaga
+            turnoVaga: this.state.processo.turnoVaga
         }
 
         const candidatoMontado = await this.cadastrarCandidato();
@@ -104,6 +166,7 @@ export default class LancarEntrevistaModal extends React.Component{
         const entrevista = {
             data: this.state.dataSelecionada,
             processo: processoMontado,
+            obs: this.state.obs,
             candidato: { 
                 id: candidatoMontado.id,
                 turnoFaculdade: candidatoMontado.turnoFaculdade,
@@ -112,17 +175,58 @@ export default class LancarEntrevistaModal extends React.Component{
             diccao: '',
             girias: '',
             postura: '',
-            pontualidade: '',
-            obs: this.state.obs
+            pontualidade: ''
         }
- 
-         this.EntrevistaService.cadastrar(entrevista).then( response => {
-                 mensagemSucesso('Entrevista lançada com sucesso!')
-                 this.props.onClose();
-             }).catch( erro => {
-                 this.setState({mensagemErro: erro.response})
-                 mensagemErro(erro.response)
-             })
+        
+        this.EntrevistaService.cadastrar(entrevista).then( response => {
+            mensagemSucesso('Entrevista lançada com sucesso!')
+            this.props.onClose();
+        }).catch( erro => {
+            this.setState({mensagemErro: erro.response})
+            mensagemErro(erro.response)
+        })
+    }
+
+    editarEntrevista = async (id) => {
+        const msgs = this.validar();
+
+        if(msgs && msgs.length >0){
+            msgs.forEach((msg, index) => {
+                mensagemErro(msg)
+            })
+            return false;
+       }
+
+       const candidatoMontado = await this.editarCandidato(this.state.candidatoEditar.id);
+
+       const entrevista = {
+            data: this.state.dataSelecionada,
+            obs: this.state.obs,
+            candidato: {
+                nomeCompleto: candidatoMontado.nomeCompleto,
+                fone: candidatoMontado.fone,
+                turnoFaculdade: candidatoMontado.turnoFaculdade,
+                sttCandidato: candidatoMontado.sttCandidato
+            }
+        }
+
+       this.EntrevistaService.alterar(id, entrevista).then( response => {
+            mensagemSucesso('Entrevista alterada com sucesso!')
+            this.props.onClose();
+        }).catch( erro => {
+            this.setState({mensagemErro: erro.response})
+            mensagemErro(erro.response)
+        })
+
+    }
+
+    salvarEntrevista = async () => {
+
+        if (this.props.editar === false) {
+            this.cadastrarEntrevista()
+        }else {
+            this.editarEntrevista(this.state.entrevistaEditar.id)
+        } 
      }
     
     render(){
@@ -131,7 +235,7 @@ export default class LancarEntrevistaModal extends React.Component{
         return (
             <Modal show={showModal} onHide={onClose} dialogClassName="custom-modal">
             <Modal.Header closeButton>
-                <Modal.Title>Lançar Nova Entrevista</Modal.Title>
+                <Modal.Title>Entrevista</Modal.Title>
             </Modal.Header>
             <Modal.Body>
                 <Form>
@@ -156,6 +260,7 @@ export default class LancarEntrevistaModal extends React.Component{
                                 className="form-control"
                                 name="nomeCompleto"
                                 placeholder="Digite o nome do candidato"
+                                value={this.state.candidatoNome}
                                 onChange={(e) => this.setState({candidatoNome: e.target.value})}/>
                     </FormGroup>
 
@@ -165,6 +270,7 @@ export default class LancarEntrevistaModal extends React.Component{
                                 className="form-control"
                                 name="fone"
                                 placeholder="Digite o fone do candidato"
+                                value={this.state.candidatoFone}
                                 onChange={(e) => this.setState({candidatoFone: e.target.value})}/>
                     </FormGroup>
 
@@ -173,6 +279,8 @@ export default class LancarEntrevistaModal extends React.Component{
                                 id="inputObs"
                                 className="form-control"
                                 name="obs"
+                                placeholder="Digite a observação"
+                                value={this.state.obs}
                                 onChange={(e) => this.setState({obs: e.target.value})}/>
                     </FormGroup>                    
                 </Form>
@@ -181,9 +289,11 @@ export default class LancarEntrevistaModal extends React.Component{
                 <Button variant="secondary" onClick={onClose}>
                 Fechar
                 </Button>
-                <Button variant="primary" onClick={this.cadastrarEntrevista}>
-                Cadastrar
+                
+                <Button variant="primary" onClick={this.salvarEntrevista}>
+                Salvar
                 </Button>
+
             </Modal.Footer>
             </Modal>
         )

@@ -21,7 +21,8 @@ export default class CadastroProcessoModal extends React.Component{
             turnoVaga: '',
             pdvList: [],
             pdv: '',
-            pdvNome: ''
+            pdvNome: '',
+            funcao: ''
         };
         this.CadastroPDVService = new CadastroPDVService();
     }
@@ -76,6 +77,10 @@ export default class CadastroProcessoModal extends React.Component{
             msgs.push('Selecione o PDV!');
         }
 
+        if (!this.state.funcao) {
+            msgs.push('A função do Processo Seletivo é obrigatória!');
+        }
+
         return msgs;
     }
 
@@ -100,7 +105,8 @@ export default class CadastroProcessoModal extends React.Component{
             qtdVagas: this.state.qtdVagas,
             tipoVaga: this.state.tipoVaga,
             turnoVaga: this.state.turnoVaga,
-            pdv: pdvMontado
+            pdv: pdvMontado,
+            funcao: this.state.funcao
         }
 
         this.cadastroProcessoService.cadastrar(processo).then( response => {
@@ -157,76 +163,104 @@ export default class CadastroProcessoModal extends React.Component{
             </Modal.Header>
             <Modal.Body>
                 <Form>
-                    <FormGroup label="Data de início: " htmlFor="inputDataInicio">
-                        <input type="text"
-                                id="inputDataInicio"
+                    <div>
+                        <FormGroup label="Data de início: " htmlFor="inputDataInicio">
+                            <input type="text"
+                                    id="inputDataInicio"
+                                    className="form-control"
+                                    name="dataInicio"
+                                    value={this.formatarDataParaExibicao(Date(this.state.dataInicio))}
+                                    readOnly/>
+                        </FormGroup>
+                    </div>
+                    <div>
+                        <FormGroup label="Nome: *" htmlFor="inputNome">
+                            <input type="text"
+                                    id="inputNome"
+                                    className="form-control"
+                                    name="nome"
+                                    value={this.definirNome(pdvNome, new Date(this.state.dataInicio))}
+                                    readOnly
+                            />
+                        </FormGroup>
+                    </div>
+                    <div className="row">
+                        <div className="col-md-5">
+                            <Form.Group controlId="qtdVagas">
+                                <Form.Label>Vagas: *</Form.Label>
+                                <Form.Control
+                                type="number"
                                 className="form-control"
-                                name="dataInicio"
-                                value={this.formatarDataParaExibicao(Date(this.state.dataInicio))}
-                                readOnly/>
-                    </FormGroup>
-
-                    <FormGroup label="Nome: *" htmlFor="inputNome">
-                        <input type="text"
-                                id="inputNome"
+                                placeholder="Digite as vagas"
+                                onChange={(e) => this.setState({qtdVagas: e.target.value})}
+                                >
+                                </Form.Control>
+                            </Form.Group>
+                        </div>
+                        <div className="col-md-7">
+                            <Form.Group controlId="funcao">
+                                <Form.Label>Função: *</Form.Label>
+                                <Form.Control
+                                as="select"
                                 className="form-control"
-                                name="nome"
-                                value={this.definirNome(pdvNome, new Date(this.state.dataInicio))}
-                                readOnly
-                        />
-                    </FormGroup>
-
-
-                    <FormGroup label="Vagas: *" htmlFor="inputQtdVagas">
-                        <input type="number"
-                                id="inputQtdVagas"
+                                onChange={(e) => this.setState({funcao: e.target.value})}
+                                >
+                                <option value="">Selecione...</option>
+                                <option value="Suporte Técnico - ServiceDesk">Suporte Técnico - ServiceDesk</option>
+                                <option value="Implantador de Software">Implantador de Software</option>
+                                </Form.Control>
+                            </Form.Group>
+                        </div>
+                    </div>
+                    <div className="row">
+                        <div className="col-md-6">
+                            <Form.Group controlId="tipoVaga">
+                                <Form.Label>Tipo da Vaga: *</Form.Label>
+                                <Form.Control
+                                as="select"
                                 className="form-control"
-                                name="qtdVagas"
-                                placeholder="Digite a quandidade de Vagas"
-                                onChange={(e) => this.setState({qtdVagas: e.target.value})}/>
-                    </FormGroup>
-
-                    <Form.Group controlId="tipoVaga">
-                        <Form.Label>Tipo da Vaga: *</Form.Label>
-                        <Form.Control
-                        as="select"
-                        onChange={(e) => this.setState({tipoVaga: e.target.value})}
-                        >
-                        <option value="">Selecione...</option>
-                        <option value="ESTAGIO">Estágio</option>
-                        <option value="EFETIVO">Efetivo</option>
-                        <option value="JOVEM_APRENDIZ">Jovem Aprendiz</option>
-                        </Form.Control>
-                    </Form.Group>
-
-                    <Form.Group controlId="turnoVaga">
-                        <Form.Label>Turno da Vaga: *</Form.Label>
-                        <Form.Control
-                        as="select"
-                        onChange={(e) => this.setState({turnoVaga: e.target.value})}
-                        >
-                        <option value="">Selecione...</option>
-                        <option value="MANHA">Manhã</option>
-                        <option value="TARDE">Tarde</option>
-                        <option value="MANHA_TARDE">Manhã & Tarde</option>
-                        <option value="INTEGRAL">Integral</option>
-                        </Form.Control>
-                    </Form.Group>
-
-                    <Form.Group controlId="inputPdv" htmlFor="inputPdv">
-                        <Form.Label>PDV: *</Form.Label>
-                        <Form.Control
-                        as="select"
-                        onChange={(e) => this.setState({ pdv: e.target.value })}
-                        >
-                        <option value="">Selecione...</option>
-                        {this.state.pdvList.map(pdv => (
-                            <option key={pdv.id} value={pdv.id}>
-                            {pdv.nome}
-                            </option>
-                        ))}
-                        </Form.Control>
-                    </Form.Group>
+                                onChange={(e) => this.setState({tipoVaga: e.target.value})}
+                                >
+                                <option value="">Selecione...</option>
+                                <option value="ESTAGIO">Estágio</option>
+                                <option value="EFETIVO">Efetivo</option>
+                                <option value="JOVEM_APRENDIZ">Jovem Aprendiz</option>
+                                </Form.Control>
+                            </Form.Group>
+                        </div>
+                        <div className="col-md-6">
+                            <Form.Group controlId="turnoVaga">
+                                <Form.Label>Turno da Vaga: *</Form.Label>
+                                <Form.Control
+                                as="select"
+                                className="form-control"
+                                onChange={(e) => this.setState({turnoVaga: e.target.value})}
+                                >
+                                <option value="">Selecione...</option>
+                                <option value="MANHA">Manhã</option>
+                                <option value="TARDE">Tarde</option>
+                                <option value="MANHA_TARDE">Manhã & Tarde</option>
+                                <option value="INTEGRAL">Integral</option>
+                                </Form.Control>
+                            </Form.Group>
+                        </div>
+                    </div>
+                    <div>
+                        <Form.Group controlId="inputPdv" htmlFor="inputPdv">
+                            <Form.Label>PDV: *</Form.Label>
+                            <Form.Control
+                            as="select"
+                            onChange={(e) => this.setState({ pdv: e.target.value })}
+                            >
+                            <option value="">Selecione...</option>
+                            {this.state.pdvList.map(pdv => (
+                                <option key={pdv.id} value={pdv.id}>
+                                {pdv.nome}
+                                </option>
+                            ))}
+                            </Form.Control>
+                        </Form.Group>
+                    </div>
                 </Form>
             </Modal.Body>
             <Modal.Footer>

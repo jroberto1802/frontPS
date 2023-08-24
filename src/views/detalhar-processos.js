@@ -26,7 +26,10 @@ class DetalharProcessos extends React.Component {
             modalLancarEntrevista: false,
             listaMensagens: [],
             menssagemSelecionada: '',
-            candidatoSelecionado: null
+            candidatoSelecionado: null,
+            entrevistaSelecionada: null,
+            nomeCompleto: '',
+            editar: false
         }
     }
 
@@ -44,11 +47,19 @@ class DetalharProcessos extends React.Component {
         this.setState({ modalLancarEntrevista: true });
     }
 
+    abrirEditarEntrevistaModal = (entrevista, candidato) => {
+        this.setState({ editar: true });
+        this.setState({ candidatoSelecionado: candidato });
+        this.setState({ entrevistaSelecionada: entrevista });
+        this.setState({ modalLancarEntrevista: true });
+    }
+
     fecharLancarEntrevistaModal = () => {
         this.setState({ modalLancarEntrevista: false }, () => {
             const { idProcessoSelecionado } = this.state;
             this.buscarEntrevistaPorProcessoId(idProcessoSelecionado);
         });
+        this.setState({ editar: false });
     }
 
     formatarDataParaExibicao = (data) => {
@@ -109,6 +120,9 @@ class DetalharProcessos extends React.Component {
         }
         if (mensagem.includes('!pdv.nome!')) {
             mensagem = mensagem.replace('!pdv.nome!', processo.pdv.nome);
+        }
+        if (mensagem.includes('!funcao!')) {
+            mensagem = mensagem.replace('!funcao!', processo.funcao);
         }
         if (mensagem.includes('!data!')) {
             mensagem = mensagem.replace('!data!', this.formatarDataParaExibicaoTable(listaEntrevista.data));
@@ -200,15 +214,12 @@ class DetalharProcessos extends React.Component {
                 <td style={{ verticalAlign: 'middle', textAlign: 'center' }}>
                     <div className="row" style={{ margin: '0px' }}>
                         <div className="col-md-6" style={{ padding: '0px', cursor: 'pointer' }}>
-                            <a >
+                            <a onClick={() => {this.abrirEditarEntrevistaModal(listaEntrevista.id, listaEntrevista.candidato.id)}}>
                                 <i className="fa-solid fa-pen-to-square fa-xl" style={{color: "#e4b611",}} />               
                             </a>
                         </div>
                         <div className="col-md-6" style={{ padding: '0px', cursor: 'pointer' }}>
-                            <a onClick={() => {
-                                this.deletarEntrevistaCandidato(listaEntrevista.id, listaEntrevista.candidato.id);
-                                
-                            }}>
+                            <a onClick={() => {this.deletarEntrevistaCandidato(listaEntrevista.id, listaEntrevista.candidato.id)}}>
                                 <i className="fa-solid fa-trash fa-xl" style={{color: "#db0a0a"}} />
                             </a>
                         </div>
@@ -220,7 +231,7 @@ class DetalharProcessos extends React.Component {
     })
 
     render() {
-        const { processo } = this.state;
+        const { processo, editar, entrevistaSelecionada, candidatoSelecionado } = this.state;
 
         return (
             <div className="row">
@@ -230,7 +241,7 @@ class DetalharProcessos extends React.Component {
                             <div className="row">
                                 <div className="col-lg-12" >
                                     <div className="row">
-                                        <div className="col-md-12">
+                                        <div className="col-md-6">
                                             <FormGroup label="Data de Início" htmlFor="inputDataInicio">
                                                 <input
                                                     type="text"
@@ -238,6 +249,18 @@ class DetalharProcessos extends React.Component {
                                                     className="form-control"
                                                     name="dataInicio"
                                                     value={this.formatarDataParaExibicao(processo.dataInicio)}
+                                                    readOnly
+                                                />
+                                            </FormGroup>
+                                        </div>
+                                        <div className="col-md-6">
+                                            <FormGroup label="Função da Vaga" htmlFor="inputFuncao">
+                                                <input
+                                                    type="text"
+                                                    id="inputFuncao"
+                                                    className="form-control"
+                                                    name="funcao"
+                                                    value={processo.funcao}
                                                     readOnly
                                                 />
                                             </FormGroup>
@@ -326,6 +349,9 @@ class DetalharProcessos extends React.Component {
                                 showModal={true}
                                 onClose={this.fecharLancarEntrevistaModal}
                                 processo={processo}
+                                editar={editar}
+                                candidatoSelecionado={candidatoSelecionado}
+                                entrevistaSelecionada={entrevistaSelecionada}
                             />
                 )}
             </div>
