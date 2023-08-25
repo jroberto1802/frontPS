@@ -3,9 +3,13 @@ import React from 'react';
 const StatusLED = ({ status }) => {
   const statusMappings = {
     REPROVADO: { color: 'danger', text: 'Reprovado' },
+    DESISTIU: { color: 'danger', text: 'Desistiu' },
     APROVADO: { color: 'success', text: 'Aprovado' },
     EM_PROCESSO: { color: 'primary', text: 'Em processo' },
-    DESISTIU: { color: 'warning', text: 'Desistiu' },
+    EM_ANALISE: { color: 'primary', text: 'Em análise' },
+    FORM_OK: { color: 'warning', text: 'Entrevistar' },
+    FORM_PENDENTE: { color: 'secondary', text: 'Aguardando' },
+
   };
 
   const badgeStyle = {

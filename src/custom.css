@@ -27,3 +27,7 @@ body{padding-top:120px}pre{background:#f7f7f9}@media (min-width: 768px){body>.na
   font-size: 18px;
   cursor: pointer;
 }
+
+.star-rating {
+  font-size: 40px;
+}

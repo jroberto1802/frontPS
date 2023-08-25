@@ -8,9 +8,9 @@ import EntrevistaService from "../app/services/EntrevistaService";
 import CandidatoService from "../app/services/CandidatoService";
 import MensagemService from "../app/services/MensagemService";
 import LancarEntrevistaModal from "./modalLancarEntrevista";
+import IniciarEntrevistaModal from "./modalIniciarEntrevista";
 import StatusLED from "../components/ledstatus";
 import { mensagemErro, mensagemSucesso } from '../components/toastr'
-import { Tooltip } from "react-tooltip";
 
 class DetalharProcessos extends React.Component {
     constructor() {
@@ -24,6 +24,7 @@ class DetalharProcessos extends React.Component {
             processo: null,
             listaEntrevistas:[],
             modalLancarEntrevista: false,
+            modalIniciarEntrevista: false,
             listaMensagens: [],
             menssagemSelecionada: '',
             candidatoSelecionado: null,
@@ -60,6 +61,19 @@ class DetalharProcessos extends React.Component {
             this.buscarEntrevistaPorProcessoId(idProcessoSelecionado);
         });
         this.setState({ editar: false });
+    }
+
+    abrirIniciarEntrevistaModal = (entrevista, candidato) => {
+        this.setState({ candidatoSelecionado: candidato });
+        this.setState({ entrevistaSelecionada: entrevista });
+        this.setState({ modalIniciarEntrevista: true });
+    }
+
+    fecharIniciarEntrevistaModal = () => {
+        this.setState({ modalIniciarEntrevista: false }, () => {
+            const { idProcessoSelecionado } = this.state;
+            this.buscarEntrevistaPorProcessoId(idProcessoSelecionado);
+        });
     }
 
     formatarDataParaExibicao = (data) => {
@@ -209,7 +223,14 @@ class DetalharProcessos extends React.Component {
                             )}
                         </div>
 
-                    </div>
+                    </div> 
+                </td>
+                <td style={{ verticalAlign: 'middle', textAlign: 'center' }}>
+                    <a className="btn btn-outline-primary btn-md" 
+                        role="button"
+                        onClick={() => this.abrirIniciarEntrevistaModal(listaEntrevista.id, listaEntrevista.candidato.id)}>
+                        <i className="fa-solid fa-rocket fa-xl"/>
+                    </a>
                 </td>
                 <td style={{ verticalAlign: 'middle', textAlign: 'center' }}>
                     <div className="row" style={{ margin: '0px' }}>
@@ -237,7 +258,7 @@ class DetalharProcessos extends React.Component {
             <div className="row">
                 <div className="col-lg-12">
                     {processo ? (
-                        <Card title={processo.nome} subtitle={'Processo'}>
+                        <Card title={processo.nome} subtitle={'Processo Seletivo'}>
                             <div className="row">
                                 <div className="col-lg-12" >
                                     <div className="row">
@@ -335,6 +356,7 @@ class DetalharProcessos extends React.Component {
                                     <th scope="col" style={{ verticalAlign: 'middle', textAlign: 'left' }}>Data</th>
                                     <th scope="col" style={{ verticalAlign: 'middle', textAlign: 'left' }}>Observação</th>
                                     <th scope="col" style={{ verticalAlign: 'middle', textAlign: 'left' }}>Mensagem</th>
+                                    <th scope="col" style={{ verticalAlign: 'middle', textAlign: 'center' }}>Entrevistar</th>
                                     <th scope="col" style={{ verticalAlign: 'middle', textAlign: 'center' }}>Ações</th>
                                 </tr>
                             </thead>
@@ -350,6 +372,15 @@ class DetalharProcessos extends React.Component {
                                 onClose={this.fecharLancarEntrevistaModal}
                                 processo={processo}
                                 editar={editar}
+                                candidatoSelecionado={candidatoSelecionado}
+                                entrevistaSelecionada={entrevistaSelecionada}
+                            />
+                )}
+                {this.state.modalIniciarEntrevista && (
+                            <IniciarEntrevistaModal
+                                showModal={true}
+                                onClose={this.fecharIniciarEntrevistaModal}
+                                processo={processo}
                                 candidatoSelecionado={candidatoSelecionado}
                                 entrevistaSelecionada={entrevistaSelecionada}
                             />

@@ -102,7 +102,7 @@ export default class LancarEntrevistaModal extends React.Component{
             uf: '',
             periodoAtual: '',
             turnoFaculdade: 'INDEFINIDO',
-            sttCandidato: 'EM_PROCESSO'
+            sttCandidato: 'FORM_PENDENTE'
         };
     
         try {

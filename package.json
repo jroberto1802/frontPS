@@ -19,7 +19,9 @@
     "react-router-dom": "5.1.2",
     "react-script": "^2.0.5",
     "react-scripts": "^5.0.1",
+    "react-star-rating-component": "^1.4.1",
     "react-tooltip": "^5.21.1",
+    "styled-components": "^6.0.7",
     "toastr": "^2.1.4",
     "web-vitals": "^2.1.4"
   },
