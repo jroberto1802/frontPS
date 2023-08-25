@@ -237,7 +237,7 @@ class DetalharProcessos extends React.Component {
             <div className="row">
                 <div className="col-lg-12">
                     {processo ? (
-                        <Card title={processo.nome}>
+                        <Card title={processo.nome} subtitle={'Processo'}>
                             <div className="row">
                                 <div className="col-lg-12" >
                                     <div className="row">

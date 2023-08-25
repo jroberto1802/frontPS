@@ -1,36 +1,30 @@
 import React from 'react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTimesCircle, faCheckCircle, faExclamationCircle, faPlayCircle } from '@fortawesome/free-solid-svg-icons';
 
 const StatusLED = ({ status }) => {
-  let icon = null;
-  let color = '';
+  const statusMappings = {
+    REPROVADO: { color: 'danger', text: 'Reprovado' },
+    APROVADO: { color: 'success', text: 'Aprovado' },
+    EM_PROCESSO: { color: 'primary', text: 'Em processo' },
+    DESISTIU: { color: 'warning', text: 'Desistiu' },
+  };
 
-  switch (status) {
-    case 'REPROVADO':
-      icon = faTimesCircle;
-      color = 'red';
-      break;
-    case 'APROVADO':
-      icon = faCheckCircle;
-      color = 'green';
-      break;
-    case 'DESISTIU':
-      icon = faExclamationCircle;
-      color = '#f49c14';
-      break;
-    case 'EM_PROCESSO':
-      icon = faPlayCircle;
-      break;
-    default:
-      icon = null;
-  }
+  const badgeStyle = {
+    padding: '5px 10px',
+    borderRadius: '5px',
+    display: 'inline-block',
+    color: 'white',
+    width: '90px',
+    textAlign: 'center',
+  };
 
-  if (icon) {
-    return <FontAwesomeIcon icon={icon} size="lg" style={{ color }} />;
-  }
+  const statusInfo = statusMappings[status] || {};
+  const statusColorClass = statusInfo.color || '';
 
-  return null;
+  return (
+    <span className={`badge rounded-pill bg-${statusColorClass}`} style={{ ...badgeStyle, backgroundColor: statusColorClass }}>
+      {statusInfo.text || 'Desconhecido'}
+    </span>
+  );
 };
 
 export default StatusLED;

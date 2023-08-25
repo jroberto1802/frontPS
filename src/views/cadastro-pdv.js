@@ -57,6 +57,7 @@ class CadastroPDV extends React.Component{
                                         id="inputNome" 
                                         className="form-control"
                                         name="nome"
+                                        placeholder="Digite o nome do PDV"
                                         onChange={e => this.setState({nome: e.target.value})} />
                             </FormGroup>
                             <FormGroup label="CEP: *" htmlFor="inputCep">
@@ -64,6 +65,7 @@ class CadastroPDV extends React.Component{
                                         id="inputCep" 
                                         className="form-control"
                                         name="cep"
+                                        placeholder="Digite o CEP do PDV"
                                         onChange={e => this.setState({cep: e.target.value})}
                                         style={{ marginBottom: '1rem' }} />
                             </FormGroup>
