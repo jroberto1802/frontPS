@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react';
 import { Form } from 'react-bootstrap';
 import Card from "../components/card";
 import { withRouter } from 'react-router-dom'
@@ -11,6 +11,7 @@ import LancarEntrevistaModal from "./modalLancarEntrevista";
 import IniciarEntrevistaModal from "./modalIniciarEntrevista";
 import StatusLED from "../components/ledstatus";
 import { mensagemErro, mensagemSucesso } from '../components/toastr'
+import ObservacaoModal from './modalObservacao';
 
 class DetalharProcessos extends React.Component {
     constructor() {
@@ -30,7 +31,11 @@ class DetalharProcessos extends React.Component {
             candidatoSelecionado: null,
             entrevistaSelecionada: null,
             nomeCompleto: '',
-            editar: false
+            showDetails: false,
+            editar: false,
+            observacaoModalAbrir: false,
+            observacaoModalConteudo: '',
+            clickPosition: { x: 0, y: 0 },
         }
     }
 
@@ -180,6 +185,41 @@ class DetalharProcessos extends React.Component {
         }
     }
 
+    toggleDetails = () => {
+        this.setState(prevState => ({
+            showDetails: !prevState.showDetails
+        }));
+    };
+
+    observacaoLimitada = (observacao) => {
+        if (observacao.length > 29) {
+            return observacao.substring(0, 29) + '...';
+        }
+        return observacao;
+    };
+
+    abrirObservacaoModal = (e, observacao) => {
+        if (observacao) {
+            const clickPosition = {
+                x: e.clientX,
+                y: e.clientY,
+            };
+            this.setState({
+                observacaoModalConteudo: observacao,
+                observacaoModalAbrir: true,
+                clickPosition: clickPosition,
+            });
+        }
+    };
+    
+
+    fecharObservacaoModal = () => {
+        this.setState({
+            observacaoModalAbrir: false,
+            observacaoModalConteudo: '',
+        });
+    };
+
     rows = () => this.state.listaEntrevistas.map(listaEntrevista => {
         const menssagemSelecionada = this.state.menssagemSelecionada[listaEntrevista.id];
         const linkWhatsapp = this.gerarLinkWhatsapp(this.state.processo, listaEntrevista, menssagemSelecionada);
@@ -191,7 +231,12 @@ class DetalharProcessos extends React.Component {
                 </td>
                 <td style={{ verticalAlign: 'middle', textAlign: 'left' }}>{listaEntrevista.candidato.nomeCompleto}</td>
                 <td style={{ verticalAlign: 'middle', textAlign: 'left' }}>{this.formatarDataParaExibicaoTable(listaEntrevista.data)}</td>
-                <td style={{ verticalAlign: 'middle', textAlign: 'left' }}>{listaEntrevista.obs}</td>
+                <td
+                    onClick={(e) => this.abrirObservacaoModal(e, listaEntrevista.obs)}
+                    style={{ cursor: 'pointer' }}
+                >
+                    {this.observacaoLimitada(listaEntrevista.obs)}
+                </td>
                 <td style={{ verticalAlign: 'middle', textAlign: 'center' }}>
                     <div className="row" style={{ margin: '0px' }}>
                         <div className="col-md-9" style={{ padding: '0px' }}>
@@ -213,7 +258,7 @@ class DetalharProcessos extends React.Component {
 
                         <div className="col-md-3" style={{ padding: '0px' }} > 
                             {linkWhatsapp ? (
-                                <a className="btn btn-success btn-md" 
+                                <a className="btn btn-outline-success btn-md" 
                                 role="button" href={linkWhatsapp} 
                                 target="_blank">
                                     <i className="fab fa-whatsapp fa-xl"/>
@@ -229,30 +274,30 @@ class DetalharProcessos extends React.Component {
                     <a className="btn btn-outline-primary btn-md" 
                         role="button"
                         onClick={() => this.abrirIniciarEntrevistaModal(listaEntrevista.id, listaEntrevista.candidato.id)}>
-                        <i className="fa-solid fa-rocket fa-xl"/>
+                        <i className="fa-solid fa-rocket fa-xl" />
                     </a>
                 </td>
                 <td style={{ verticalAlign: 'middle', textAlign: 'center' }}>
-                    <div className="row" style={{ margin: '0px' }}>
-                        <div className="col-md-6" style={{ padding: '0px', cursor: 'pointer' }}>
-                            <a onClick={() => {this.abrirEditarEntrevistaModal(listaEntrevista.id, listaEntrevista.candidato.id)}}>
-                                <i className="fa-solid fa-pen-to-square fa-xl" style={{color: "#e4b611",}} />               
+                    <div className="row" >
+                        <div className="col-md-6" style={{ cursor: 'pointer' }}>
+                            <a className="btn btn-outline-warning btn-md align-items-center"  onClick={() => {this.abrirEditarEntrevistaModal(listaEntrevista.id, listaEntrevista.candidato.id)}}>
+                                <i className="fa-solid fa-pen-to-square fa-xl" />               
                             </a>
                         </div>
-                        <div className="col-md-6" style={{ padding: '0px', cursor: 'pointer' }}>
-                            <a onClick={() => {this.deletarEntrevistaCandidato(listaEntrevista.id, listaEntrevista.candidato.id)}}>
-                                <i className="fa-solid fa-trash fa-xl" style={{color: "#db0a0a"}} />
+                        <div className="col-md-6" style={{ cursor: 'pointer' }}>
+                            <a className="btn btn-outline-danger btn-md align-items-center" onClick={() => {this.deletarEntrevistaCandidato(listaEntrevista.id, listaEntrevista.candidato.id)}}>
+                                <i className="fa-solid fa-trash fa-xl" />
                             </a>
                         </div>
                     </div>
                 </td>
-
             </tr>
+            
         )
     })
 
     render() {
-        const { processo, editar, entrevistaSelecionada, candidatoSelecionado } = this.state;
+        const { processo, editar, entrevistaSelecionada, candidatoSelecionado, clickPosition  } = this.state;
 
         return (
             <div className="row">
@@ -367,24 +412,32 @@ class DetalharProcessos extends React.Component {
                     </div>
                 </div>    
                 {this.state.modalLancarEntrevista && (
-                            <LancarEntrevistaModal
-                                showModal={true}
-                                onClose={this.fecharLancarEntrevistaModal}
-                                processo={processo}
-                                editar={editar}
-                                candidatoSelecionado={candidatoSelecionado}
-                                entrevistaSelecionada={entrevistaSelecionada}
-                            />
+                    <LancarEntrevistaModal
+                        showModal={true}
+                        onClose={this.fecharLancarEntrevistaModal}
+                        processo={processo}
+                        editar={editar}
+                        candidatoSelecionado={candidatoSelecionado}
+                        entrevistaSelecionada={entrevistaSelecionada}
+                    />
                 )}
                 {this.state.modalIniciarEntrevista && (
-                            <IniciarEntrevistaModal
-                                showModal={true}
-                                onClose={this.fecharIniciarEntrevistaModal}
-                                processo={processo}
-                                candidatoSelecionado={candidatoSelecionado}
-                                entrevistaSelecionada={entrevistaSelecionada}
-                            />
+                    <IniciarEntrevistaModal
+                        showModal={true}
+                        onClose={this.fecharIniciarEntrevistaModal}
+                        processo={processo}
+                        candidatoSelecionado={candidatoSelecionado}
+                        entrevistaSelecionada={entrevistaSelecionada}
+                    />
                 )}
+                {this.state.observacaoModalAbrir && (
+                    <ObservacaoModal
+                        showModal={this.state.observacaoModalAbrir}
+                        onClose={this.fecharObservacaoModal}
+                        observacaoModalConteudo={this.state.observacaoModalConteudo}
+                        clickPosition={this.state.clickPosition}
+                    />                        
+                )}  
             </div>
         )
     }

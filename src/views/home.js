@@ -61,7 +61,7 @@ class Home extends React.Component{
         novaData.setHours(novaData.getHours() - 3);
 
         const data = {
-            dataFinal: novaData.toISOString().slice(0, 19)+'Z'
+            dataFinal: novaData
         };
     
         try {

@@ -14,7 +14,7 @@ export default class CadastroProcessoModal extends React.Component{
         dataAtual.setHours(dataAtual.getHours() - 3);
         this.cadastroProcessoService = new CadastroProcessoService();
         this.state = {
-            dataInicio: dataAtual.toISOString().slice(0, 19)+'Z',
+            dataInicio: dataAtual,
             nome: '',
             qtdVagas: '',
             tipoVaga: '',

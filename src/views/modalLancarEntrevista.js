@@ -129,6 +129,13 @@ export default class LancarEntrevistaModal extends React.Component{
         const candidato = {
             fone: this.state.candidatoFone,
             nomeCompleto: this.state.candidatoNome,
+            idade: this.state.candidatoEditar.idade,
+            curso: this.state.candidatoEditar.curso,
+            faculdade: this.state.candidatoEditar.faculdade,
+            periodoAtual: this.state.candidatoEditar.periodoAtual,
+            cidade: this.state.candidatoEditar.cidade,
+            uf: this.state.candidatoEditar.uf,
+            cep: this.state.candidatoEditar.cep,
             turnoFaculdade: this.state.candidatoEditar.turnoFaculdade,
             sttCandidato: this.state.candidatoEditar.sttCandidato
         };

@@ -30,4 +30,8 @@ export default class EntrevistaService extends ApiService{
         return this.delete(`/${id}`)
     }
 
+    distancia(id){
+        return this.get(`/calculardistancia/${id}`);
+    }
+
 }
