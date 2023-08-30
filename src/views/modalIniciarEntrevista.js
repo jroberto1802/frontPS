@@ -40,7 +40,7 @@ export default class IniciarEntrevistaModal extends React.Component{
     }
 
     componentDidMount() {
-        this.calcularDistancia(this.props.entrevistaSelecionada);
+        //this.calcularDistancia(this.props.entrevistaSelecionada);
         this.carregarDadosEditar();
     }
 

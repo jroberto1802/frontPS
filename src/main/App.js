@@ -16,10 +16,7 @@ class App extends React.Component {
   render(){
     return(
       <>
-        <NavBar />
-        <div className="container">
-          <Rotas />
-        </div>
+        <Rotas />
       </>
     )
   }

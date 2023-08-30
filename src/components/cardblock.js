@@ -9,16 +9,18 @@ class Cardblock extends React.Component{
 
     render(){
         return(
-            <div className="card text-white bg-primary mb-1" style={{ maxWidth: "12.1rem", marginBottom: "0.3rem" }}>
+            <div className="card text-white bg-primary" style={{ maxWidth: "12rem" }}>
                 <div className="card-header text-center">
                     <h5 className="header-title">{this.props.nome}</h5>
                 </div>
-                <div className="card-body">
-                    <div className="card-text1">{this.props.tipoVaga}</div>
-                    <div className="card-text3">Início em: {this.formatarDataParaExibicao(this.props.dataInicio)}</div>
-                    <div className="card-text4">{this.props.qtdVagas} Vagas</div>
+                <div className="card-body-size">
+                        {this.props.tipoVaga}
+                        <br/>
+                        Início: {this.formatarDataParaExibicao(this.props.dataInicio)}
+                        <br/>
+                        {this.props.qtdVagas} Vagas
                 </div>
-                <div className="card-footer" style={{ display: 'flex', gap: '1rem' }}>
+                <div className="card-footer card-footer-size">
                     {this.props.children}
                 </div>
             </div>

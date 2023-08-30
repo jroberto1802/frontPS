@@ -118,6 +118,10 @@ class DetalharProcessos extends React.Component {
     buscarEntrevistaPorProcessoId = async (id) => {
         try {
             const response = await this.EntrevistaService.buscarByProcesso(id);
+            console.log("---------------------------");
+            console.log(response.data);
+            console.log(this.state.listaMensagens);
+            console.log("---------------------------");
             this.setState({ listaEntrevistas: response.data });
         } catch (error) {
             console.error('Erro ao buscar entrevistas por processo:', error);
@@ -192,8 +196,8 @@ class DetalharProcessos extends React.Component {
     };
 
     observacaoLimitada = (observacao) => {
-        if (observacao.length > 29) {
-            return observacao.substring(0, 29) + '...';
+        if (observacao.length > 25) {
+            return observacao.substring(0, 25) + '...';
         }
         return observacao;
     };
@@ -220,81 +224,89 @@ class DetalharProcessos extends React.Component {
         });
     };
 
-    rows = () => this.state.listaEntrevistas.map(listaEntrevista => {
-        const menssagemSelecionada = this.state.menssagemSelecionada[listaEntrevista.id];
-        const linkWhatsapp = this.gerarLinkWhatsapp(this.state.processo, listaEntrevista, menssagemSelecionada);
+    rows = () => {
+        console.log("--------------------------------");
+        console.log(this.state.listaEntrevistas);
+        console.log("--------------------------------");
 
-        return(
-            <tr key={listaEntrevista.id}>
-                <td style={{ verticalAlign: 'middle', textAlign: 'center' }}>
-                    <StatusLED status={listaEntrevista.candidato.sttCandidato} />
-                </td>
-                <td style={{ verticalAlign: 'middle', textAlign: 'left' }}>{listaEntrevista.candidato.nomeCompleto}</td>
-                <td style={{ verticalAlign: 'middle', textAlign: 'left' }}>{this.formatarDataParaExibicaoTable(listaEntrevista.data)}</td>
-                <td
-                    onClick={(e) => this.abrirObservacaoModal(e, listaEntrevista.obs)}
-                    style={{ cursor: 'pointer' }}
-                >
-                    {this.observacaoLimitada(listaEntrevista.obs)}
-                </td>
-                <td style={{ verticalAlign: 'middle', textAlign: 'center' }}>
-                    <div className="row" style={{ margin: '0px' }}>
-                        <div className="col-md-9" style={{ padding: '0px' }}>
-                            <Form.Group controlId={`inputMensagem-${listaEntrevista.id}`} htmlFor={`inputMensagem-${listaEntrevista.id}`} className="mb-0">
-                                <Form.Control
-                                    as="select"
-                                    value={this.state.menssagemSelecionada[listaEntrevista.id] || ""}
-                                    onChange={(e) => this.handleMensagemChange(e, listaEntrevista.id)}
-                                >
-                                    <option value="">Selecione...</option>
-                                    {this.state.listaMensagens.map(mensagem => (
-                                        <option key={mensagem.id} value={mensagem.corpo}>
-                                            {mensagem.assunto}
-                                        </option>
-                                    ))}
-                                </Form.Control>
-                            </Form.Group>
-                        </div>
-
-                        <div className="col-md-3" style={{ padding: '0px' }} > 
-                            {linkWhatsapp ? (
-                                <a className="btn btn-outline-success btn-md" 
-                                role="button" href={linkWhatsapp} 
-                                target="_blank">
-                                    <i className="fab fa-whatsapp fa-xl"/>
+        return this.state.listaEntrevistas.map(listaEntrevista => {
+            const menssagemSelecionada = this.state.menssagemSelecionada[listaEntrevista.id];
+            const linkWhatsapp = this.gerarLinkWhatsapp(this.state.processo, listaEntrevista, menssagemSelecionada);
+    
+            return(
+                <tr key={listaEntrevista.id}>
+                    <td style={{ verticalAlign: 'middle', textAlign: 'center' }}>
+                        <StatusLED status={listaEntrevista.candidato.sttCandidato} />
+                    </td>
+                    <td style={{ verticalAlign: 'middle', textAlign: 'left' }}>{listaEntrevista.candidato.nomeCompleto}</td>
+                    <td style={{ verticalAlign: 'middle', textAlign: 'left' }}>{this.formatarDataParaExibicaoTable(listaEntrevista.data)}</td>
+                    <td
+                        onClick={(e) => this.abrirObservacaoModal(e, listaEntrevista.obs)}
+                        style={{ cursor: 'pointer' }}
+                    >
+                        {this.observacaoLimitada(listaEntrevista.obs)}
+                    </td>
+                    <td style={{ verticalAlign: 'middle', textAlign: 'center' }}>
+                        <div className="row" style={{ margin: '0px' }}>
+                            <div className="col-md-9" style={{ padding: '0px' }}>
+                                <Form.Group controlId={`inputMensagem-${listaEntrevista.id}`} htmlFor={`inputMensagem-${listaEntrevista.id}`} className="mb-0">
+                                    <Form.Control
+                                        as="select"
+                                        value={this.state.menssagemSelecionada[listaEntrevista.id] || ""}
+                                        onChange={(e) => this.handleMensagemChange(e, listaEntrevista.id)}
+                                    >
+                                        <option value="">Selecione...</option>
+                                        {
+                                            (this.state.listaMensagens ?? []).map(mensagem => (
+                                                <option key={mensagem.id} value={mensagem.corpo}>
+                                                    {mensagem.assunto}
+                                                </option>
+                                            ))
+                                        }
+                                    </Form.Control>
+                                </Form.Group>
+                            </div>
+    
+                            <div className="col-md-3" style={{ padding: '0px' }} > 
+                                {linkWhatsapp ? (
+                                    <a className="btn btn-outline-success btn-md" 
+                                    role="button" href={linkWhatsapp} 
+                                    target="_blank">
+                                        <i className="fab fa-whatsapp fa-xl"/>
+                                    </a>
+                                ) : (
+                                    <button disabled>Enviar Mensagem</button>
+                                )}
+                            </div>
+    
+                        </div> 
+                    </td>
+                    <td style={{ verticalAlign: 'middle', textAlign: 'center' }}>
+                        <a className="btn btn-outline-primary btn-md" 
+                            role="button"
+                            onClick={() => this.abrirIniciarEntrevistaModal(listaEntrevista.id, listaEntrevista.candidato.id)}>
+                            <i className="fa-solid fa-rocket fa-xl" />
+                        </a>
+                    </td>
+                    <td style={{ verticalAlign: 'middle', textAlign: 'center' }}>
+                        <div className="row" >
+                            <div className="col-md-6" style={{ cursor: 'pointer' }}>
+                                <a className="btn btn-outline-warning btn-md align-items-center"  onClick={() => {this.abrirEditarEntrevistaModal(listaEntrevista.id, listaEntrevista.candidato.id)}}>
+                                    <i className="fa-solid fa-pen-to-square fa-xl" />               
                                 </a>
-                            ) : (
-                                <button disabled>Enviar Mensagem</button>
-                            )}
+                            </div>
+                            <div className="col-md-6" style={{ cursor: 'pointer' }}>
+                                <a className="btn btn-outline-danger btn-md align-items-center" onClick={() => {this.deletarEntrevistaCandidato(listaEntrevista.id, listaEntrevista.candidato.id)}}>
+                                    <i className="fa-solid fa-trash fa-xl" />
+                                </a>
+                            </div>
                         </div>
-
-                    </div> 
-                </td>
-                <td style={{ verticalAlign: 'middle', textAlign: 'center' }}>
-                    <a className="btn btn-outline-primary btn-md" 
-                        role="button"
-                        onClick={() => this.abrirIniciarEntrevistaModal(listaEntrevista.id, listaEntrevista.candidato.id)}>
-                        <i className="fa-solid fa-rocket fa-xl" />
-                    </a>
-                </td>
-                <td style={{ verticalAlign: 'middle', textAlign: 'center' }}>
-                    <div className="row" >
-                        <div className="col-md-6" style={{ cursor: 'pointer' }}>
-                            <a className="btn btn-outline-warning btn-md align-items-center"  onClick={() => {this.abrirEditarEntrevistaModal(listaEntrevista.id, listaEntrevista.candidato.id)}}>
-                                <i className="fa-solid fa-pen-to-square fa-xl" />               
-                            </a>
-                        </div>
-                        <div className="col-md-6" style={{ cursor: 'pointer' }}>
-                            <a className="btn btn-outline-danger btn-md align-items-center" onClick={() => {this.deletarEntrevistaCandidato(listaEntrevista.id, listaEntrevista.candidato.id)}}>
-                                <i className="fa-solid fa-trash fa-xl" />
-                            </a>
-                        </div>
-                    </div>
-                </td>
-            </tr>
-            
-        )
-    })
+                    </td>
+                </tr>
+                
+            )
+        })
+    }
 
     render() {
         const { processo, editar, entrevistaSelecionada, candidatoSelecionado, clickPosition  } = this.state;

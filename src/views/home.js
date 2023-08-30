@@ -81,23 +81,23 @@ class Home extends React.Component{
                     <p className="lead">Esse é seu sistema de Processos Seletivos.</p>
                     <p className="lead">Processos em aberto:</p>
                     <div className="container">
-                        <div className="row custom-column">
+                        <div className="row">
                             {this.state.processos.map((processo, index) => (
-                                <div className="col-md-3 mb-3" key={index}>
+                                <div className="col-md-2" key={index}>
                                     <Cardblock
                                         nome={processo.nome}
                                         tipoVaga={processo.tipoVaga}
                                         dataInicio={processo.dataInicio}
                                         qtdVagas={processo.qtdVagas}>
 
-                                        <div style={{ display: "flex", gap: '1rem' }}>
-                                            <button onClick={() => this.atualizarDataFinal(processo.id)} type="button" className="btn btn-danger btn-sm">Finalizar</button>
+                                        <div style={{ display: "flex", justifyContent: "space-between"}}>
+                                            <button onClick={() => this.atualizarDataFinal(processo.id)} type="button" className="btn btn-danger custom-btn-sm">Finalizar</button>
                                             <button onClick={() => {
                                                         this.setState({ idProcessoSelecionado: processo.id });
                                                         this.props.history.push(`/detalhar-processos/${processo.id}`);
                                                         }}
                                                     type="button" 
-                                                    className="btn btn-success btn-sm">Detalhar</button>
+                                                    className="btn btn-success custom-btn-sm">Detalhar</button>
                                         </div>
                                     </Cardblock>
                                 </div>
