@@ -1,7 +1,7 @@
 import axios from 'axios'
 
 const httpClient = axios.create({
-    baseURL: 'tcp://0.tcp.sa.ngrok.io:18752'
+    baseURL: 'tcp://0.tcp.sa.ngrok.io:10954'
 })
 
 class ApiService {
