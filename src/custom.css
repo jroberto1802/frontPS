@@ -17,7 +17,7 @@ body {
 }
 
 .card-body-size {
-  margin-left: 15px;
+  margin-left: 15px ;
   margin-top: 15px;
   margin-bottom: 15px;
 }
@@ -29,8 +29,8 @@ body {
 }
 
 .custom-btn-sm {
-  font-size: 14px; /* ou ajuste conforme necessário */
-  padding: 6px 8px; /* ou ajuste conforme necessário */
+  font-size: 13px; /* ou ajuste conforme necessário */
+  padding: 4px 4px; /* ou ajuste conforme necessário */
 }
 
 @import './font-awesome.css';
@@ -120,7 +120,6 @@ body {
   box-sizing: border-box;
   font: inherit;
   border: none;
-  margin: 0;
   cursor: pointer;
   display: inline-block;
   vertical-align: top;
@@ -133,8 +132,6 @@ body {
   line-height: 1.20;
   font-weight: 600;
   font-style: normal;
-  text-transform: none;
-  letter-spacing: 0em;
   border-radius: 0.3em;
   padding: 0.8em 1.8em;
   box-shadow: 0 0em 0em rgba(0,0,0,0.2);
@@ -147,6 +144,7 @@ body {
   margin-top: 20px;
   padding-top: 10px;
   padding-bottom: 10px;
+  text-decoration: none;
 }
 
 .wpcf7-form-button:hover {
@@ -191,7 +189,7 @@ body {
   -webkit-tap-highlight-color: rgba(252,216,0,0.2);
   text-align: center;
   box-sizing: border-box;
-  font-size: 32px!important;
+  font-size: 24px!important;
   padding-top: 0;
   color: #231F20;
   font: normal 20px/32px Dosis;
@@ -209,12 +207,27 @@ body {
   background-repeat: no-repeat;
   height: 300px;
   width: 100%;
+  height: 727px;
+  padding: 0 150px;
+  display: flex;
+  align-items: center;
+  position: relative;
+}
+
+.topoerro {
+  background-image: url(https://www.inboundcycle.com/hs-fs/hubfs/error%20404%20que%20es.png?width=512&name=error%20404%20que%20es.png);
+  background-position: top center;
+  background-size: 100%, cover;
+  background-repeat: no-repeat;
+  height: 300px;
+  width: 100%;
   height: 927px;
   padding: 0 150px;
   display: flex;
   align-items: center;
   position: relative;
 }
+
 .relativo {
   position: relative;
 }
@@ -226,17 +239,6 @@ footer#page-footer {
   background-size: 100%, cover;
   padding: 100px 0;
   width: 100%;
-}
-
-.ui-slider-handle {
-  outline: none!important;
-  color: #ffffff;
-  text-decoration: none;
-  background: none;
-  transition-property: background, box-shadow, border, color, opacity, transform;
-  transition-duration: 0.3s;
-  -webkit-text-decoration-skip: objects;
-  margin-left: 2cm;
 }
 
 .w-menu ul, .w-menu .menu-item {

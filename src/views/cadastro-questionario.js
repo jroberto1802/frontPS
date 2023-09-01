@@ -29,22 +29,24 @@ class CadastroQuestionario extends React.Component{
 
     render(){
         return(
-            <div className="row">
-                <div className="col-lg-6" style={{position: 'relative'} }>
-                    <div className="bs-component">
-                        <Card title="Cadastro de Questionários">
-                            <FormGroup label="Título: *" htmlFor="imputTitulo">
-                                <input type="text" 
-                                        id="imputTitulo" 
-                                        className="form-control"
-                                        name="titulo"
-                                        onChange={e => this.setState({titulo: e.target.value})} 
-                                        style={{ marginBottom: '1rem' }} />
-                            </FormGroup>
-                            <button onClick={this.cadastrar} type="button" className="btn btn-success">Cadastrar</button>
-                            <hr className="my-4" />
-                            <button onClick={this.addquestao} type="button" className="btn btn-warning">Add Questão</button>
-                        </Card>
+            <div className="container" style={{ marginTop: "110px"}}>
+                <div className="row">
+                    <div className="col-lg-6" style={{position: 'relative'} }>
+                        <div className="bs-component">
+                            <Card title="Cadastro de Questionários">
+                                <FormGroup label="Título: *" htmlFor="imputTitulo">
+                                    <input type="text" 
+                                            id="imputTitulo" 
+                                            className="form-control"
+                                            name="titulo"
+                                            onChange={e => this.setState({titulo: e.target.value})} 
+                                            style={{ marginBottom: '1rem' }} />
+                                </FormGroup>
+                                <button onClick={this.cadastrar} type="button" className="btn btn-success">Cadastrar</button>
+                                <hr className="my-4" />
+                                <button onClick={this.addquestao} type="button" className="btn btn-warning">Add Questão</button>
+                            </Card>
+                        </div>
                     </div>
                 </div>
             </div>

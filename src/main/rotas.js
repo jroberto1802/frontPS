@@ -6,6 +6,7 @@ import detalharProcessos from '../views/detalhar-processos'
 import { Route, Switch, HashRouter } from 'react-router-dom'
 import cadastroQuestionario from '../views/cadastro-questionario'
 import cadastroMensagem from '../views/cadastro-mensagem'
+import paginaErro from '../views/pagina-erro'
 import formInscricaoCandidato from '../views/form-inscricao-candidato'
 import NavBar from '../components/navbar'
 
@@ -13,8 +14,8 @@ function Rotas(){
     return (
         <HashRouter>
             <Switch>
-                <Route path="/form-inscricao-candidato" component={formInscricaoCandidato} />
-                
+                <Route path="/form-inscricao-candidato/:candidatoSelecionado/:entrevistaSelecionada" component={formInscricaoCandidato} />
+                <Route path="/error" component={paginaErro} />
                 <AdminRoutes/>
             </Switch>
         </HashRouter>

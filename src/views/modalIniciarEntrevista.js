@@ -60,18 +60,6 @@ export default class IniciarEntrevistaModal extends React.Component{
         }
     }
 
-    async calcularDistancia(id)  {
-        try {
-            const response = await this.EntrevistaService.distancia(id);
-            const distanciaArredondada = parseFloat(response.data).toFixed(1);
-            this.setState({ distancia: distanciaArredondada });
-        } catch (erro) {
-            this.setState({ mensagemErro: erro.response });
-            mensagemErro(`Não foi possível calcular a distância: ${erro.response}`);
-            return null;
-        }    
-    }
-
     inicializarCampos() {
         
         this.setState({
@@ -135,6 +123,7 @@ export default class IniciarEntrevistaModal extends React.Component{
     editarCandidato = async (id) => {
             
         const candidato = {
+            email: this.state.candidato.email,
             fone: this.state.candidatoEditar.fone,
             nomeCompleto: this.state.candidatoEditar.nomeCompleto,
             idade: this.state.candidatoEditar.idade,
@@ -146,7 +135,8 @@ export default class IniciarEntrevistaModal extends React.Component{
             uf: this.state.candidatoEditar.uf,
             cep: this.state.candidatoEditar.cep,
             turnoFaculdade: this.state.candidatoEditar.turnoFaculdade,
-            sttCandidato: 'EM_ANALISE'
+            sttCandidato: 'EM_ANALISE',
+            distancia: this.state.candidatoEditar.distancia
         };
     
         try {

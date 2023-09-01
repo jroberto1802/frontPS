@@ -1,7 +1,7 @@
 import React from 'react';
 import { Form } from 'react-bootstrap';
 import Card from "../components/card";
-import { withRouter } from 'react-router-dom'
+import { withRouter } from "react-router-dom"
 import CadastroProcessoService from "../app/services/cadastroProcessoService";
 import FormGroup from "../components/form-group";
 import EntrevistaService from "../app/services/EntrevistaService";
@@ -118,10 +118,6 @@ class DetalharProcessos extends React.Component {
     buscarEntrevistaPorProcessoId = async (id) => {
         try {
             const response = await this.EntrevistaService.buscarByProcesso(id);
-            console.log("---------------------------");
-            console.log(response.data);
-            console.log(this.state.listaMensagens);
-            console.log("---------------------------");
             this.setState({ listaEntrevistas: response.data });
         } catch (error) {
             console.error('Erro ao buscar entrevistas por processo:', error);
@@ -149,6 +145,12 @@ class DetalharProcessos extends React.Component {
         }
         if (mensagem.includes('!data!')) {
             mensagem = mensagem.replace('!data!', this.formatarDataParaExibicaoTable(listaEntrevista.data));
+        }
+        if (mensagem.includes('!idcandidato!')) {
+            mensagem = mensagem.replace('!idcandidato!', listaEntrevista.candidato.id);
+        }
+        if (mensagem.includes('!identrevista!')) {
+            mensagem = mensagem.replace('!identrevista!', listaEntrevista.id);
         }
         return mensagem;
     };
@@ -196,8 +198,8 @@ class DetalharProcessos extends React.Component {
     };
 
     observacaoLimitada = (observacao) => {
-        if (observacao.length > 25) {
-            return observacao.substring(0, 25) + '...';
+        if (observacao.length > 20) {
+            return observacao.substring(0, 20) + '...';
         }
         return observacao;
     };
@@ -225,9 +227,6 @@ class DetalharProcessos extends React.Component {
     };
 
     rows = () => {
-        console.log("--------------------------------");
-        console.log(this.state.listaEntrevistas);
-        console.log("--------------------------------");
 
         return this.state.listaEntrevistas.map(listaEntrevista => {
             const menssagemSelecionada = this.state.menssagemSelecionada[listaEntrevista.id];
@@ -309,147 +308,149 @@ class DetalharProcessos extends React.Component {
     }
 
     render() {
-        const { processo, editar, entrevistaSelecionada, candidatoSelecionado, clickPosition  } = this.state;
+        const { processo, editar, entrevistaSelecionada, candidatoSelecionado  } = this.state;
 
         return (
-            <div className="row">
-                <div className="col-lg-12">
-                    {processo ? (
-                        <Card title={processo.nome} subtitle={'Processo Seletivo'}>
-                            <div className="row">
-                                <div className="col-lg-12" >
-                                    <div className="row">
-                                        <div className="col-md-6">
-                                            <FormGroup label="Data de Início" htmlFor="inputDataInicio">
-                                                <input
-                                                    type="text"
-                                                    id="inputDataInicio"
-                                                    className="form-control"
-                                                    name="dataInicio"
-                                                    value={this.formatarDataParaExibicao(processo.dataInicio)}
-                                                    readOnly
-                                                />
-                                            </FormGroup>
-                                        </div>
-                                        <div className="col-md-6">
-                                            <FormGroup label="Função da Vaga" htmlFor="inputFuncao">
-                                                <input
-                                                    type="text"
-                                                    id="inputFuncao"
-                                                    className="form-control"
-                                                    name="funcao"
-                                                    value={processo.funcao}
-                                                    readOnly
-                                                />
-                                            </FormGroup>
-                                        </div>
-                                    </div>
-                                    <div className="row">
-                                        <div className="col-md-4">
-                                                <FormGroup label="Tipo da Vaga" htmlFor="inputTipoVaga">
+            <div style={{ margin: "110px 60px"}}>
+                <div className="row">
+                    <div className="col-lg-12">
+                        {processo ? (
+                            <Card title={processo.nome} subtitle={'Processo Seletivo'}>
+                                <div className="row">
+                                    <div className="col-lg-12" >
+                                        <div className="row">
+                                            <div className="col-md-6">
+                                                <FormGroup label="Data de Início" htmlFor="inputDataInicio">
                                                     <input
                                                         type="text"
-                                                        id="inputTipoVaga"
+                                                        id="inputDataInicio"
                                                         className="form-control"
-                                                        name="tipoVaga"
-                                                        value={`${processo.tipoVaga}`}
+                                                        name="dataInicio"
+                                                        value={this.formatarDataParaExibicao(processo.dataInicio)}
                                                         readOnly
                                                     />
                                                 </FormGroup>
+                                            </div>
+                                            <div className="col-md-6">
+                                                <FormGroup label="Função da Vaga" htmlFor="inputFuncao">
+                                                    <input
+                                                        type="text"
+                                                        id="inputFuncao"
+                                                        className="form-control"
+                                                        name="funcao"
+                                                        value={processo.funcao}
+                                                        readOnly
+                                                    />
+                                                </FormGroup>
+                                            </div>
                                         </div>
-                                        <div className="col-md-4">
-                                            <FormGroup label="Turno da Vaga" htmlFor="inputTurnoVaga">
-                                                <input
-                                                    type="text"
-                                                    id="inputTurnoVaga"
-                                                    className="form-control"
-                                                    name="turnoVaga"
-                                                    value={`${processo.turnoVaga}`}
-                                                    readOnly
-                                                />
-                                            </FormGroup>
+                                        <div className="row">
+                                            <div className="col-md-4">
+                                                    <FormGroup label="Tipo da Vaga" htmlFor="inputTipoVaga">
+                                                        <input
+                                                            type="text"
+                                                            id="inputTipoVaga"
+                                                            className="form-control"
+                                                            name="tipoVaga"
+                                                            value={`${processo.tipoVaga}`}
+                                                            readOnly
+                                                        />
+                                                    </FormGroup>
+                                            </div>
+                                            <div className="col-md-4">
+                                                <FormGroup label="Turno da Vaga" htmlFor="inputTurnoVaga">
+                                                    <input
+                                                        type="text"
+                                                        id="inputTurnoVaga"
+                                                        className="form-control"
+                                                        name="turnoVaga"
+                                                        value={`${processo.turnoVaga}`}
+                                                        readOnly
+                                                    />
+                                                </FormGroup>
+                                            </div>
+                                            <div className="col-md-4">
+                                                <FormGroup label="Vagas" htmlFor="inputQtdVagas">
+                                                    <input
+                                                        type="text"
+                                                        id="inputQtdVagas"
+                                                        className="form-control"
+                                                        name="qtdVagas"
+                                                        value={`${processo.qtdVagas}`}
+                                                        readOnly
+                                                    />
+                                                </FormGroup>
+                                            </div>
+                                            
                                         </div>
-                                        <div className="col-md-4">
-                                            <FormGroup label="Vagas" htmlFor="inputQtdVagas">
-                                                <input
-                                                    type="text"
-                                                    id="inputQtdVagas"
-                                                    className="form-control"
-                                                    name="qtdVagas"
-                                                    value={`${processo.qtdVagas}`}
-                                                    readOnly
-                                                />
-                                            </FormGroup>
-                                        </div>
-                                        
                                     </div>
+                                    
                                 </div>
-                                
-                            </div>
-                        </Card>
-                        
-                    ) : (
-                        <p>Carregando...</p>
-                    )}
-                </div>
+                            </Card>
+                            
+                        ) : (
+                            <p>Carregando...</p>
+                        )}
+                    </div>
 
-                <div className="row mt-3">
-                    <div className="col-md-12 text-right">
-                        <div className="bs-component">
-                            <button className="btn btn-warning btn-lg" onClick={this.abrirLancarEntrevistaModal}>
-                                <div className="text-center"><i className="fa-solid fa-plus-circle"></i> <span className="hidden-xs">&nbsp;&nbsp;Entrevista</span> </div>
-                            </button>
+                    <div className="row mt-3">
+                        <div className="col-md-12 text-right">
+                            <div className="bs-component">
+                                <button className="btn btn-warning btn-lg" onClick={this.abrirLancarEntrevistaModal}>
+                                    <div className="text-center"><i className="fa-solid fa-plus-circle"></i> <span className="hidden-xs">&nbsp;&nbsp;Entrevista</span> </div>
+                                </button>
+                            </div>
                         </div>
                     </div>
-                </div>
 
-                <div className="row mt-3">
-                    <div>
-                        <table className="table table-hover">
-                            <thead>
-                                <tr>
-                                    <th scope="col" style={{ verticalAlign: 'middle', textAlign: 'center' }}>Status</th>
-                                    <th scope="col" style={{ verticalAlign: 'middle', textAlign: 'left' }}>Candidato</th>
-                                    <th scope="col" style={{ verticalAlign: 'middle', textAlign: 'left' }}>Data</th>
-                                    <th scope="col" style={{ verticalAlign: 'middle', textAlign: 'left' }}>Observação</th>
-                                    <th scope="col" style={{ verticalAlign: 'middle', textAlign: 'left' }}>Mensagem</th>
-                                    <th scope="col" style={{ verticalAlign: 'middle', textAlign: 'center' }}>Entrevistar</th>
-                                    <th scope="col" style={{ verticalAlign: 'middle', textAlign: 'center' }}>Ações</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {this.rows()}
-                            </tbody>
-                        </table>
-                    </div>
-                </div>    
-                {this.state.modalLancarEntrevista && (
-                    <LancarEntrevistaModal
-                        showModal={true}
-                        onClose={this.fecharLancarEntrevistaModal}
-                        processo={processo}
-                        editar={editar}
-                        candidatoSelecionado={candidatoSelecionado}
-                        entrevistaSelecionada={entrevistaSelecionada}
-                    />
-                )}
-                {this.state.modalIniciarEntrevista && (
-                    <IniciarEntrevistaModal
-                        showModal={true}
-                        onClose={this.fecharIniciarEntrevistaModal}
-                        processo={processo}
-                        candidatoSelecionado={candidatoSelecionado}
-                        entrevistaSelecionada={entrevistaSelecionada}
-                    />
-                )}
-                {this.state.observacaoModalAbrir && (
-                    <ObservacaoModal
-                        showModal={this.state.observacaoModalAbrir}
-                        onClose={this.fecharObservacaoModal}
-                        observacaoModalConteudo={this.state.observacaoModalConteudo}
-                        clickPosition={this.state.clickPosition}
-                    />                        
-                )}  
+                    <div className="row mt-3">
+                        <div>
+                            <table className="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th scope="col" style={{ verticalAlign: 'middle', textAlign: 'center' }}>Status</th>
+                                        <th scope="col" style={{ verticalAlign: 'middle', textAlign: 'left' }}>Candidato</th>
+                                        <th scope="col" style={{ verticalAlign: 'middle', textAlign: 'left' }}>Data</th>
+                                        <th scope="col" style={{ verticalAlign: 'middle', textAlign: 'left' }}>Observação</th>
+                                        <th scope="col" style={{ verticalAlign: 'middle', textAlign: 'left' }}>Mensagem</th>
+                                        <th scope="col" style={{ verticalAlign: 'middle', textAlign: 'center' }}>Entrevistar</th>
+                                        <th scope="col" style={{ verticalAlign: 'middle', textAlign: 'center' }}>Ações</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {this.rows()}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>    
+                    {this.state.modalLancarEntrevista && (
+                        <LancarEntrevistaModal
+                            showModal={true}
+                            onClose={this.fecharLancarEntrevistaModal}
+                            processo={processo}
+                            editar={editar}
+                            candidatoSelecionado={candidatoSelecionado}
+                            entrevistaSelecionada={entrevistaSelecionada}
+                        />
+                    )}
+                    {this.state.modalIniciarEntrevista && (
+                        <IniciarEntrevistaModal
+                            showModal={true}
+                            onClose={this.fecharIniciarEntrevistaModal}
+                            processo={processo}
+                            candidatoSelecionado={candidatoSelecionado}
+                            entrevistaSelecionada={entrevistaSelecionada}
+                        />
+                    )}
+                    {this.state.observacaoModalAbrir && (
+                        <ObservacaoModal
+                            showModal={this.state.observacaoModalAbrir}
+                            onClose={this.fecharObservacaoModal}
+                            observacaoModalConteudo={this.state.observacaoModalConteudo}
+                            clickPosition={this.state.clickPosition}
+                        />                        
+                    )}  
+                </div>
             </div>
         )
     }

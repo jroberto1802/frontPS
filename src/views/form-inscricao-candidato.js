@@ -1,13 +1,109 @@
 import React from 'react';
 import { withRouter } from 'react-router-dom'
+import EntrevistaService from '../app/services/EntrevistaService';
+import CandidatoService from '../app/services/CandidatoService';
+import { mensagemErro, mensagemSucesso } from '../components/toastr'
 
 class FormInscricaoCandidato extends React.Component {
 
-    constructor() {
-        super();
+    constructor(props) {
+        super(props);
+        console.log(props)
+        this.EntrevistaService = new EntrevistaService();
+        this.CandidatoService = new CandidatoService();
+        this.state = {
+            entrevistaSelecionada: null,
+            candidatoSelecionado: null,
+            entrevista: null,
+            candidato: null,
+            nomeCompleto: '',
+            idade: '',
+            cep: '',
+            fone: '',
+            logradouro: '',
+            cidade: '',
+            email: '',
+            uf: '',
+            curso: '',
+            faculdade: '',
+            periodoAtual: '',
+            turnoFaculdade: '',
+            sttCandidato: '',
+            distancia: ''
+        }
     }
 
+    async carregarDados(candidato, entrevista) {
+        try {
+            const candidatoResponse = await this.CandidatoService.buscarId(candidato);
+            const entrevistaResponse = await this.EntrevistaService.buscarId(entrevista);
+            this.setState({
+                candidato: candidatoResponse.data,
+                entrevista: entrevistaResponse.data,
+                fone: candidatoResponse.data.fone,
+                nomeCompleto: candidatoResponse.data.nomeCompleto    
+            });
+            
+        } catch (error) {
+            console.error('Erro ao buscar dados', error);
+            this.props.history.push('/error')
+        }
+    }
+
+    componentDidMount() {
+        const { entrevistaSelecionada, candidatoSelecionado } = this.props.match.params
+        console.log(entrevistaSelecionada, candidatoSelecionado)
+        if (entrevistaSelecionada && candidatoSelecionado) {
+            this.setState({ entrevistaSelecionada, candidatoSelecionado });
+            this.carregarDados(candidatoSelecionado, entrevistaSelecionada);
+        }
+    }
+
+
+    enviarDadosCandidato = async (id) => {
+            
+        const candidato = {
+            nomeCompleto: this.state.nomeCompleto,
+            fone: this.state.fone,
+            email: this.state.email,
+            idade: this.state.idade,
+            curso: this.state.curso,
+            faculdade: this.state.faculdade,
+            logradouro: this.state.logradouro,
+            periodoAtual: this.state.periodoAtual,
+            cidade: this.state.cidade,
+            uf: this.state.uf,
+            cep: this.state.cep,
+            turnoFaculdade: this.state.turnoFaculdade,
+            sttCandidato: 'FORM_OK',
+            distancia: this.calcularDistancia(this.state.entrevista)
+        };
+    
+        try {
+            const response = await this.CandidatoService.alterar(id, candidato);
+            mensagemSucesso("Dados Enviados!");  
+        } catch (erro) {
+            this.setState({ mensagemErro: erro.response });
+            mensagemErro(erro.response);
+            return null;
+        }
+    };
+
+    async calcularDistancia(id)  {
+        try {
+            const response = await this.EntrevistaService.distancia(id);
+            const distanciaArredondada = parseFloat(response.data).toFixed(1);
+            this.setState({ distancia: distanciaArredondada });
+        } catch (erro) {
+            this.setState({ mensagemErro: erro.response });
+            mensagemErro(`Não foi possível calcular a distância: ${erro.response}`);
+            return null;
+        }    
+    }
+
+
     render() {
+        const { entrevista, candidato } = this.state;
 
         return ( 
             <div style={{ backgroundColor: '#ececec' }}>
@@ -17,20 +113,20 @@ class FormInscricaoCandidato extends React.Component {
                 </style>
                 <section className="topo relativo" />
 
-                <br />
-                <h1 className="titulo_interna" style={{ marginTop: '40px'}}>QUEREMOS O SEU TALENTO CONOSCO!</h1>
+                <h1 className="titulo_interna" style={{ marginTop: '60px'}}>SEJA BEM VINDO!</h1>
+                <h1 className="titulo_interna" style={{ marginBottom: '40px', color: '#f2d31d'}}> {candidato ? candidato.nomeCompleto : ''}</h1>
 
                 <h3 className="descricao_interna">
                     A Softcom está em constante expansão e regularmente fazemos processos seletivos, tanto para preenchimento de vagas como para incorporamento de ideias inovadoras.<br />
-                    Se sente pronto para um desafio?<br />
-                    Deixe aqui o seu currículo e venha fazer parte de uma das empresas que têm o melhor processo de formação de pessoas, reconhecida pelo GPTW. Boa Sorte!
+                    O seu currículo foi selecionado para participar do processo seletivo para a vaga de {entrevista ? entrevista.processo.funcao : ''} ({entrevista ? entrevista.processo.tipoVaga : ''}) em nossa filial de {entrevista ? entrevista.processo.pdv.nome : ''}<br />
+                    Gostariamos de te conhecer um pouco mais, para isso preencha os dados a seguir, esses dados são necessários para uma possível entrevista. Boa Sorte!
                 </h3>
                 
-                <h2 class="titulo_interna" >PREENCHA SEUS DADOS</h2>
-                <div className='container' style={{ padding: '20px 80px 150px 80px'}}>
+                <h2 className="titulo_interna" >PREENCHA SEUS DADOS</h2>
+                <div className='container' style={{ padding: '30px 60px 120px 60px'}}>
                     <form>
                         <div className="row" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                            <div className='col-md-5'>
+                            <div className='col-md-6'>
                                 <div className="row">
                                     <div className='col-md-9'>
                                         <span className="wpcf7-form-span">
@@ -41,7 +137,8 @@ class FormInscricaoCandidato extends React.Component {
                                                 className="wpcf7-form"
                                                 aria-required="true"
                                                 aria-invalid="false"
-                                                placeholder="Nome completo"
+                                                value={candidato ? candidato.nomeCompleto : ''}
+                                                readOnly
                                             />
                                         </span>
                                     </div>
@@ -55,6 +152,7 @@ class FormInscricaoCandidato extends React.Component {
                                                 aria-required="true"
                                                 aria-invalid="false"
                                                 placeholder="Idade"
+                                                onChange={e => this.setState({idade: e.target.value})}
                                             />
                                         </span>
                                     </div>
@@ -70,6 +168,7 @@ class FormInscricaoCandidato extends React.Component {
                                                 aria-required="true"
                                                 aria-invalid="false"
                                                 placeholder="E-mail para contato"
+                                                onChange={e => this.setState({email: e.target.value})}
                                             />
                                         </span>
                                         <br />
@@ -77,13 +176,14 @@ class FormInscricaoCandidato extends React.Component {
                                     <div className="col-md-6">
                                         <span className="wpcf7-form-span">
                                             <input
-                                                type="text"
+                                                type="tel"
                                                 name="fone"
                                                 size="40"
                                                 className="wpcf7-form"
                                                 aria-required="true"
                                                 aria-invalid="false"
-                                                placeholder="Whatsapp para contato"
+                                                value={candidato ? candidato.fone : ''}
+                                                onChange={e => this.setState({fone: e.target.value})}
                                             />
                                         </span>
                                         <br />
@@ -100,6 +200,7 @@ class FormInscricaoCandidato extends React.Component {
                                                 aria-required="true"
                                                 aria-invalid="false"
                                                 placeholder="CEP *"
+                                                onChange={e => this.setState({cep: e.target.value})}
                                             />
                                         </span>
                                         <br />
@@ -114,6 +215,7 @@ class FormInscricaoCandidato extends React.Component {
                                                 aria-required="true"
                                                 aria-invalid="false"
                                                 placeholder="Logradouro"
+                                                onChange={e => this.setState({logradouro: e.target.value})}
                                             />
                                         </span>
                                         <br />
@@ -130,14 +232,19 @@ class FormInscricaoCandidato extends React.Component {
                                                 aria-required="true"
                                                 aria-invalid="false"
                                                 placeholder="Cidade"
+                                                onChange={e => this.setState({cidade: e.target.value})}
                                             />
                                         </span>
                                         <br />
                                     </div>
                                     <div className="col-md-4">
                                         <span className="wpcf7-form-span">
-                                            <select id="uf-select" className="wpcf7-form" name="uf">
-                                                <option value="" disabled selected>UF</option>
+                                            <select id="uf-select" 
+                                                    className="wpcf7-form" 
+                                                    name="uf" 
+                                                    value={this.state.uf??''} 
+                                                    onChange={(e) => this.setState({uf: e.target.value})}>
+                                                <option value="" disabled>UF</option>
                                                 <option value="AC">Acre</option>
                                                 <option value="AL">Alagoas</option>
                                                 <option value="AP">Amapá</option>
@@ -170,20 +277,34 @@ class FormInscricaoCandidato extends React.Component {
                                     </div>
                                 </div>
                                 <div className="row">
-                                    <span className="wpcf7-form-span">
-                                        <input
-                                            type="text"
-                                            name="curso"
-                                            size="40"
-                                            className="wpcf7-form"
-                                            aria-required="true"
-                                            aria-invalid="false"
-                                            placeholder="Curso"
-                                        />
-                                    </span>
+                                    <div className="col-md-6">
+                                        <span className="wpcf7-form-span">
+                                            <input
+                                                type="text"
+                                                name="curso"
+                                                size="40"
+                                                className="wpcf7-form"
+                                                aria-required="true"
+                                                aria-invalid="false"
+                                                placeholder="Curso"
+                                                onChange={e => this.setState({curso: e.target.value})}
+                                            />
+                                        </span>
+                                    </div>
+                                    <div className="col-md-6">
+                                        <span className="wpcf7-form-span">
+                                            <select id="turnoFaculdade-select" className="wpcf7-form" name="turnoFaculdade" value={this.state.turnoFaculdade??''}  onChange={(e) => this.setState({turnoFaculdade: e.target.value})}>
+                                                <option value="" disabled>Turno</option>
+                                                <option value="MANHA">Manhã</option>
+                                                <option value="TARDE">Tarde</option>
+                                                <option value="NOITE">Noite</option>
+                                                <option value="INTEGRAL">Integral</option>
+                                            </select>
+                                        </span>
+                                    </div>
                                 </div>
                                 <div className="row">
-                                    <div className="col-md-6">
+                                    <div className="col-md-7">
                                         <span className="wpcf7-form-span">
                                             <input
                                                 type="text"
@@ -193,13 +314,14 @@ class FormInscricaoCandidato extends React.Component {
                                                 aria-required="true"
                                                 aria-invalid="false"
                                                 placeholder="Faculdade"
+                                                onChange={e => this.setState({faculdade: e.target.value})}
                                             />
                                         </span>
                                     </div>
-                                    <div className="col-md-6">
+                                    <div className="col-md-5">
                                         <span className="wpcf7-form-span">
-                                            <select className="wpcf7-form" name="cidade" >
-                                                <option value="" className='placeholder-option' disabled selected>Período Atual</option>
+                                            <select className="wpcf7-form" name="periodoAtual" value={this.state.periodoAtual??''} onChange={(e) => this.setState({periodoAtual: e.target.value})}>
+                                                <option value="" disabled>Período Atual</option>
                                                 <option value="Concluído">Concluído</option>
                                                 <option value="1º Período">1º Período</option>
                                                 <option value="2º Período">2º Período</option>
@@ -217,7 +339,7 @@ class FormInscricaoCandidato extends React.Component {
                                     </div>
                                 </div>
                             </div>
-                            <div className='col-md-7' >
+                            <div className='col-md-6' >
                                 <span className="wpcf7-form-span">
                                     <textarea
                                         name="your-message"
@@ -229,11 +351,11 @@ class FormInscricaoCandidato extends React.Component {
                                     ></textarea>
                                 </span>
                                 <br />
-                                <input
-                                    type="submit"
-                                    value="Enviar formulário"
-                                    className="wpcf7-form-button"
-                                />
+                                <a className="wpcf7-form-button"
+                                    role="button"
+                                    onClick={() => this.enviarDadosCandidato(this.state.candidatoSelecionado)}>
+                                Enviar Formulário
+                                </a>
                             </div>
                         </div>
                     </form>
@@ -242,29 +364,29 @@ class FormInscricaoCandidato extends React.Component {
                     <section>
                         <div className="row">
                             <div className="col-md-6">
-                                <div>
-                                    <img width="270" height="56" src="https://softcomtecnologia.com.br/wp-content/uploads/2020/03/Group-51-Copy-1-1.png" style={{ marginLeft: '128px' }} />
-                                    </div>
+                                <div style={{ textAlign: 'center' }}>
+                                    <img width="270" height="56" src="https://softcomtecnologia.com.br/wp-content/uploads/2020/03/Group-51-Copy-1-1.png" />
+                                </div>
+                                <br/>
+                                <div  style={{ textAlign: 'center' }} >
                                     <br/>
-                                    <div  style={{ marginLeft: '128px' }} >
-                                        <br/>
-                                        <a className="us_custom_9f461eaf" href="https://softcomtecnologia.com.br/apresentacao/" target="_blank">SOBRE A SOFTCOM</a>
-                                        <br/>
-                                        <br/>
-                                        <a className="us_custom_9f461eaf" href="https://softcomtecnologia.com.br/universidade-softcom/" target="_blank">UNIVERSIDADE SOFTCOM</a>
-                                        <br/>
-                                        <br/>  
-                                        <a className="us_custom_9f461eaf" href="https://softcomtecnologia.com.br/trabalhe-conosco/" target="_blank">TRABALHE CONOSCO</a>                                                          
-                                    </div>
+                                    <a className="us_custom_9f461eaf" href="https://softcomtecnologia.com.br/apresentacao/" target="_blank">SOBRE A SOFTCOM</a>
                                     <br/>
                                     <br/>
+                                    <a className="us_custom_9f461eaf" href="https://softcomtecnologia.com.br/universidade-softcom/" target="_blank">UNIVERSIDADE SOFTCOM</a>
                                     <br/>
+                                    <br/>  
+                                    <a className="us_custom_9f461eaf" href="https://softcomtecnologia.com.br/trabalhe-conosco/" target="_blank">TRABALHE CONOSCO</a>                                                          
+                                </div>
+                                <br/>
+                                <br/>
+                                <br/>
                                 </div>
                             <div className="col-md-6">
                                 <br/>
                                 <br/>
-                                <div style={{ textAlign: 'center' }}>
-                                    <div style={{ fontSize: 24, color: 'yellow', letterSpacing: 1.2 }}>
+                                <div style={{ textAlign: 'center', marginLeft: '-30px'}}>
+                                    <div style={{ fontSize: '24', color: 'yellow', letterSpacing: '1.2' }}>
                                         <h4><strong>FALE CONOSCO</strong></h4>
                                     </div>
                                     <div className="fontebranca">
@@ -273,18 +395,18 @@ class FormInscricaoCandidato extends React.Component {
                                 </div>
                                 <br/>
                                 <br/>
-                                <div className="ui-slider-handle">
+                                <div style={{ textAlign: 'center' }}>
                                     <p><a href="https://www.facebook.com/softcom.tecnologia/" target="_blank" rel="noopener noreferrer">
-                                            <img className="img" src="https://softcomtecnologia.com.br/wp-content/uploads/2020/03/Group-42-1-1.svg" alt="" style={{ marginLeft: '4em' }}/>
+                                            <img className="img" src="https://softcomtecnologia.com.br/wp-content/uploads/2020/03/Group-42-1-1.svg" alt="" />
                                         </a>
                                         <a href="https://www.instagram.com/softcomtecnologia/" target="_blank" rel="noopener noreferrer">
-                                            <img className="img" src="https://softcomtecnologia.com.br/wp-content/uploads/2020/03/Group-53-1-1.svg" alt="" style={{ marginLeft: '4em' }} />
+                                            <img className="img" src="https://softcomtecnologia.com.br/wp-content/uploads/2020/03/Group-53-1-1.svg" alt="" style={{ marginLeft: '2em' }} />
                                         </a>
                                         <a href="https://www.youtube.com/channel/UCsbyaPZbzePD8qOVJRN2NoA/videos" target="_blank" rel="noopener noreferrer">
-                                            <img className="img" src="https://softcomtecnologia.com.br/wp-content/uploads/2020/03/Group-55-1-1.svg" alt="" style={{ marginLeft: '4em' }} />
+                                            <img className="img" src="https://softcomtecnologia.com.br/wp-content/uploads/2020/03/Group-55-1-1.svg" alt="" style={{ marginLeft: '2em' }} />
                                         </a>
-                                        <a href="https://www.youtube.com/channel/UCsbyaPZbzePD8qOVJRN2NoA/videos" target="_blank" rel="noopener noreferrer">
-                                            <img className="img" src="https://softcomtecnologia.com.br/wp-content/uploads/2020/03/Group-55-1-1.svg" alt="" style={{ marginLeft: '4em' }}/>
+                                        <a href="https://www.linkedin.com/company/softcomtecnologia/" target="_blank" rel="noopener noreferrer">
+                                            <img width="55" height="47" className="img" src="https://softcomtecnologia.com.br/wp-content/uploads/2020/08/linkedin-32.svg" alt="" style={{ marginLeft: '2em', marginTop: '8px' }}/>
                                         </a>
                                     </p>
                                 </div>
@@ -300,7 +422,7 @@ class FormInscricaoCandidato extends React.Component {
 
                     </section>
                     
-                    <section className="row" style={{ marginLeft: '3em' }}>
+                    <section className="row" style={{ textAlign: 'center', marginTop: '80px' }}>
                         <div className="col-md-2" style={{ marginLeft: '2em' }}>
                             <img width="148" height="56" src="https://softcomtecnologia.com.br/wp-content/uploads/2020/03/mpe-brasil-2.png" className="attachment-large size-large" alt="" loading="lazy" />
                         </div> 
@@ -319,7 +441,7 @@ class FormInscricaoCandidato extends React.Component {
                     </section>
                 </footer>
             </div>
-        )
+        );
     }
 }
 

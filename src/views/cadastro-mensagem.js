@@ -47,36 +47,38 @@ class CadastroMensagem extends React.Component{
 
     render(){
         return(
-            <div className="row">
-                <div className="col-lg-5" style={{position: 'relative'} }>
-                    <div className="bs-component">
-                        <Card title="Cadastro de Mensagens">
-                            <FormGroup label="Assunto: *" htmlFor="inputAssunto">
-                                <input type="text" 
-                                        id="inputAssunto" 
+            <div className="container" style={{ marginTop: "110px"}}>
+                <div className="row">
+                    <div className="col-lg-5" style={{position: 'relative'} }>
+                        <div className="bs-component">
+                            <Card title="Cadastro de Mensagens">
+                                <FormGroup label="Assunto: *" htmlFor="inputAssunto">
+                                    <input type="text" 
+                                            id="inputAssunto" 
+                                            className="form-control"
+                                            name="assunto"
+                                            onChange={e => this.setState({assunto: e.target.value})} 
+                                            placeholder="Digite o assunto da mensagem"
+                                    />
+                                </FormGroup>
+                                <FormGroup label="" htmlFor="inputCorpo">
+                                    <textarea
+                                        id="inputCorpo"
                                         className="form-control"
-                                        name="assunto"
-                                        onChange={e => this.setState({assunto: e.target.value})} 
-                                        placeholder="Digite o assunto da mensagem"
-                                />
-                            </FormGroup>
-                            <FormGroup label="" htmlFor="inputCorpo">
-                                <textarea
-                                    id="inputCorpo"
-                                    className="form-control"
-                                    name="corpo"
-                                    value={this.state.corpo}
-                                    onChange={e => this.setState({corpo: e.target.value})}
-                                    rows="8"
-                                    style={{ marginBottom: '1rem' }}
-                                    placeholder="Digite o corpo da mensagem"
-                                />
-                            </FormGroup>
-                            <div style={{ display: 'flex', gap: '1rem' }}>
-                                <button onClick={this.cadastrar} type="button" className="btn btn-success">Salvar</button>
-                                <button onClick={this.cancelar} type="button" className="btn btn-danger">Cancelar</button>
-                            </div>
-                        </Card>
+                                        name="corpo"
+                                        value={this.state.corpo}
+                                        onChange={e => this.setState({corpo: e.target.value})}
+                                        rows="8"
+                                        style={{ marginBottom: '1rem' }}
+                                        placeholder="Digite o corpo da mensagem"
+                                    />
+                                </FormGroup>
+                                <div style={{ display: 'flex', gap: '1rem' }}>
+                                    <button onClick={this.cadastrar} type="button" className="btn btn-success">Salvar</button>
+                                    <button onClick={this.cancelar} type="button" className="btn btn-danger">Cancelar</button>
+                                </div>
+                            </Card>
+                        </div>
                     </div>
                 </div>
             </div>

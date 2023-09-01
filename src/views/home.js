@@ -75,7 +75,7 @@ class Home extends React.Component{
 
     render(){
         return(
-            <div className="container">
+            <div className="container" style={{ marginTop: "110px"}}>
                 <div className="jumbotron" >
                     <h1 className="display-3">Bem vindo!</h1>
                     <p className="lead">Esse é seu sistema de Processos Seletivos.</p>
@@ -89,7 +89,7 @@ class Home extends React.Component{
                                         tipoVaga={processo.tipoVaga}
                                         dataInicio={processo.dataInicio}
                                         qtdVagas={processo.qtdVagas}>
-
+                                            
                                         <div style={{ display: "flex", justifyContent: "space-between"}}>
                                             <button onClick={() => this.atualizarDataFinal(processo.id)} type="button" className="btn btn-danger custom-btn-sm">Finalizar</button>
                                             <button onClick={() => {

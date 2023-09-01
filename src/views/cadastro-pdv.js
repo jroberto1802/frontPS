@@ -48,32 +48,34 @@ class CadastroPDV extends React.Component{
 
     render(){
         return(
-            <div className="row">
-                <div className="col-lg-4" style={{position: 'relative'} }>
-                    <div className="bs-component">
-                        <Card title="Cadastro de PDVs">
-                            <FormGroup label="Nome: *" htmlFor="inputNome">
-                                <input type="text" 
-                                        id="inputNome" 
-                                        className="form-control"
-                                        name="nome"
-                                        placeholder="Digite o nome do PDV"
-                                        onChange={e => this.setState({nome: e.target.value})} />
-                            </FormGroup>
-                            <FormGroup label="CEP: *" htmlFor="inputCep">
-                                <input type="text" 
-                                        id="inputCep" 
-                                        className="form-control"
-                                        name="cep"
-                                        placeholder="Digite o CEP do PDV"
-                                        onChange={e => this.setState({cep: e.target.value})}
-                                        style={{ marginBottom: '1rem' }} />
-                            </FormGroup>
-                            <div style={{ display: 'flex', gap: '1rem' }}>
-                                <button onClick={this.cadastrar} type="button" className="btn btn-success">Salvar</button>
-                                <button onClick={this.cancelar} type="button" className="btn btn-danger">Cancelar</button>
-                            </div>
-                        </Card>
+            <div className="container" style={{ marginTop: "110px"}}>
+                <div className="row">
+                    <div className="col-lg-4" style={{position: 'relative'} }>
+                        <div className="bs-component">
+                            <Card title="Cadastro de PDVs">
+                                <FormGroup label="Nome: *" htmlFor="inputNome">
+                                    <input type="text" 
+                                            id="inputNome" 
+                                            className="form-control"
+                                            name="nome"
+                                            placeholder="Digite o nome do PDV"
+                                            onChange={e => this.setState({nome: e.target.value})} />
+                                </FormGroup>
+                                <FormGroup label="CEP: *" htmlFor="inputCep">
+                                    <input type="text" 
+                                            id="inputCep" 
+                                            className="form-control"
+                                            name="cep"
+                                            placeholder="Digite o CEP do PDV"
+                                            onChange={e => this.setState({cep: e.target.value})}
+                                            style={{ marginBottom: '1rem' }} />
+                                </FormGroup>
+                                <div style={{ display: 'flex', gap: '1rem' }}>
+                                    <button onClick={this.cadastrar} type="button" className="btn btn-success">Salvar</button>
+                                    <button onClick={this.cancelar} type="button" className="btn btn-danger">Cancelar</button>
+                                </div>
+                            </Card>
+                        </div>
                     </div>
                 </div>
             </div>
