@@ -40,7 +40,6 @@ export default class IniciarEntrevistaModal extends React.Component{
     }
 
     componentDidMount() {
-        //this.calcularDistancia(this.props.entrevistaSelecionada);
         this.carregarDadosEditar();
     }
 
@@ -71,7 +70,7 @@ export default class IniciarEntrevistaModal extends React.Component{
             cidade: this.state.candidatoEditar.cidade,
             uf: this.state.candidatoEditar.uf,
             cep: this.state.candidatoEditar.cep,
-            distancia: this.state.distancia,
+            distancia: this.state.candidatoEditar.distancia,
             turnoFaculdade: this.state.candidatoEditar.turnoFaculdade
         });
     }
@@ -123,7 +122,7 @@ export default class IniciarEntrevistaModal extends React.Component{
     editarCandidato = async (id) => {
             
         const candidato = {
-            email: this.state.candidato.email,
+            email: this.state.candidatoEditar.email,
             fone: this.state.candidatoEditar.fone,
             nomeCompleto: this.state.candidatoEditar.nomeCompleto,
             idade: this.state.candidatoEditar.idade,

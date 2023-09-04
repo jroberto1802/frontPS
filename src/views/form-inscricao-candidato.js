@@ -76,12 +76,16 @@ class FormInscricaoCandidato extends React.Component {
             cep: this.state.cep,
             turnoFaculdade: this.state.turnoFaculdade,
             sttCandidato: 'FORM_OK',
-            distancia: this.calcularDistancia(this.state.entrevista)
+            distancia: ''
         };
+
+        
     
         try {
             const response = await this.CandidatoService.alterar(id, candidato);
-            mensagemSucesso("Dados Enviados!");  
+            mensagemSucesso("Dados Enviados!"); 
+
+            await this.calcularDistancia(this.state.entrevista.id);
         } catch (erro) {
             this.setState({ mensagemErro: erro.response });
             mensagemErro(erro.response);
@@ -93,7 +97,10 @@ class FormInscricaoCandidato extends React.Component {
         try {
             const response = await this.EntrevistaService.distancia(id);
             const distanciaArredondada = parseFloat(response.data).toFixed(1);
-            this.setState({ distancia: distanciaArredondada });
+            const candidatodistancia = {
+                distancia: distanciaArredondada
+            }
+            const resp = this.CandidatoService.alterarDistancia(this.state.candidato.id, candidatodistancia)   
         } catch (erro) {
             this.setState({ mensagemErro: erro.response });
             mensagemErro(`Não foi possível calcular a distância: ${erro.response}`);

@@ -26,4 +26,8 @@ export default class CandidatoService extends ApiService{
         return this.delete(`/${id}`)
     }
 
+    alterarDistancia(id, obj){
+        return this.put(`/${id}/distancia`, obj)
+    }
+
 }
