@@ -17,6 +17,14 @@ class CadastroPDVService extends ApiService{
     listarById(id){
         return this.get('/'+id)
     }
+
+    deletar(id){
+        return this.delete(`/${id}`)
+    }
+
+    alterar(id, obj){
+        return this.put(`/${id}`, obj)
+    }
 }
 
 export default CadastroPDVService;

@@ -16,8 +16,8 @@ function NavBar(){
                 <div className="collapse navbar-collapse" id="navbarResponsive">
                     <ul className="navbar-nav">
                         <NavBarItem href="#/cadastro-pdv" label="PDVs" />
-                        <NavBarItem href="#/cadastro-questionario" label="Questionários" />    
-                        <NavBarItem href="#/cadastro-mensagens" label="Mensagens" />   
+                        <NavBarItem href="#/cadastro-mensagens" label="Mensagens" /> 
+                        <NavBarItem href="#/cadastro-questionario" label="Questionários" />
                         <NavBarItem href="#/form-inscricao-candidato" label="Form de Inscricao" />                         
                     </ul>
 

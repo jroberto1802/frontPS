@@ -1,8 +1,8 @@
 import axios from 'axios'
 
 const httpClient = axios.create({
-    //baseURL: 'https://b6d1-177-43-232-3.ngrok-free.app'
-    baseURL: 'https://robertojunior.ddns.net:8080'
+    baseURL: 'http://localhost:8080'
+    //baseURL: 'https://robertojunior.ddns.net:8080'
 })
 
 class ApiService {

@@ -218,7 +218,6 @@ class DetalharProcessos extends React.Component {
         }
     };
     
-
     fecharObservacaoModal = () => {
         this.setState({
             observacaoModalAbrir: false,
