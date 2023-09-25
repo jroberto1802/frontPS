@@ -201,17 +201,86 @@ body {
 }
 
 .background-login {
-  background-image: url(https://softcomtecnologia.com.br/wp-content/uploads/2023/03/trabalhe-conosco.png);
+  background-image: url(../src/img/login.png);
   background-position: top center;
   background-size: 100%, cover;
   background-repeat: no-repeat;
-  height: 300px;
   width: 100%;
-  height: 727px;
-  padding: 0 150px;
+  height: 980px;
   display: flex;
+  justify-content: flex-end;
   align-items: center;
-  position: relative;
+}
+
+.card-login {
+  border: 1px #575756;
+  box-shadow: 0 2px 3px 0 rgba(116, 116, 116);
+  border-radius: 4px;
+  background: #fff;
+  width: 476px;
+  height: 547px;
+  text-align: center;
+  margin-top: 110px;
+  margin-right: 110px;
+}
+
+.text-card-login {
+  margin-top: 18px;
+  text-align: center;
+  font-family: 'Inter'
+}
+
+.login-input {
+  text-transform: none;
+  font: inherit;
+  border-color: gray;
+  outline: none!important;
+  border-radius: 0.3rem;
+  border: 1px solid #e4e2e2;
+  width: 330px;
+  height: 56px;
+  transition: all 0.3s;
+  margin: 0 auto;
+  margin-bottom: 32px;
+  font-size: 20px;
+  background: #fff;
+  display: flex;
+}
+
+.custom-line {
+  height: 4px; 
+  background-color: #FFC001; 
+  width: 132px; 
+  margin-top: 6px; 
+  margin-bottom: 19px;
+}
+
+.custom-login-button {
+  background-color: #FFC001; 
+  width: 330px;
+  height: 56px;
+  margin: 0 auto;
+  display: flex;
+  outline: none!important;
+  border-radius: 0.3rem;
+  border: 1px solid #e4e2e2;
+  text-align: center;
+  font-weight: bold;
+  justify-content: center;
+  align-items: center;
+  color: #ffffff;
+  font-family: 'Inter';
+  font-size: 16px!important;
+}
+
+.login-input:hover {
+  border: 1px solid #FCD800;
+  box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.20);
+  border-radius: 6px
+}
+
+.login-input:focus {
+  box-shadow: 0 0 0 1px transparent, 0 1px 0 rgba(0,0,0,0.08) inset, 0 0 1px 1px #FCD800;
 }
 
 .topo {
