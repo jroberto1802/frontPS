@@ -12,6 +12,7 @@ import IniciarEntrevistaModal from "./modalIniciarEntrevista";
 import StatusLED from "../components/ledstatus";
 import { mensagemErro, mensagemSucesso } from '../components/toastr'
 import ObservacaoModal from './modalObservacao';
+import AcoesCandidato from '../components/acoes-candidato';
 
 class DetalharProcessos extends React.Component {
     constructor() {
@@ -225,12 +226,64 @@ class DetalharProcessos extends React.Component {
         });
     };
 
+    aprovarCandidato = (id) => {
+        const candidato = {
+            sttCandidato: 'APROVADO'
+        };
+    
+        try {
+            const response = this.CandidatoService.alterarSttCandidato(id, candidato);
+            mensagemSucesso('Candidato APROVADO');
+        } catch (erro) {
+            this.setState({ mensagemErro: erro.response });
+            mensagemErro(erro.response);
+        }
+        {
+            this.buscarEntrevistaPorProcessoId(this.state.idProcessoSelecionado);
+        } 
+    }
+
+    reprovarCandidato = (id) => {
+        const candidato = {
+            sttCandidato: 'REPROVADO'
+        };
+    
+        try {
+            const response = this.CandidatoService.alterarSttCandidato(id, candidato);
+            mensagemSucesso('Candidato REPROVADO');
+        } catch (erro) {
+            this.setState({ mensagemErro: erro.response });
+            mensagemErro(erro.response);
+        }
+        {
+            this.buscarEntrevistaPorProcessoId(this.state.idProcessoSelecionado);
+        }    
+    }
+
+    candidatoDesistiu = (id) => {
+        const candidato = {
+            sttCandidato: 'DESISTIU'
+        };
+    
+        try {
+            const response = this.CandidatoService.alterarSttCandidato(id, candidato);
+            mensagemSucesso('Candidato DESISTIU');
+        } catch (erro) {
+            this.setState({ mensagemErro: erro.response });
+            mensagemErro(erro.response);
+        }
+        {
+            this.buscarEntrevistaPorProcessoId(this.state.idProcessoSelecionado);
+        } 
+    }
+
     rows = () => {
 
         return this.state.listaEntrevistas.map(listaEntrevista => {
             const menssagemSelecionada = this.state.menssagemSelecionada[listaEntrevista.id];
             const linkWhatsapp = this.gerarLinkWhatsapp(this.state.processo, listaEntrevista, menssagemSelecionada);
-    
+            //const isDisabled = listaEntrevista.candidato.candidatoStt === 'FORM_OK';
+
             return(
                 <tr key={listaEntrevista.id}>
                     <td style={{ verticalAlign: 'middle', textAlign: 'center' }}>
@@ -265,7 +318,7 @@ class DetalharProcessos extends React.Component {
                                 </Form.Group>
                             </div>
     
-                            <div className="col-md-3" style={{ padding: '0px' }} > 
+                            <div className="col-md-3" style={{ padding: '0px 0px 0px 0px' }} > 
                                 {linkWhatsapp ? (
                                     <a className="btn btn-outline-success btn-md" 
                                     role="button" href={linkWhatsapp} 
@@ -273,29 +326,41 @@ class DetalharProcessos extends React.Component {
                                         <i className="fab fa-whatsapp fa-xl"/>
                                     </a>
                                 ) : (
-                                    <button disabled>Enviar Mensagem</button>
+                                    <button>Enviar Mensagem</button>
                                 )}
                             </div>
     
                         </div> 
                     </td>
                     <td style={{ verticalAlign: 'middle', textAlign: 'center' }}>
-                        <a className="btn btn-outline-primary btn-md" 
+                        <button className="btn btn-outline-primary btn-md" 
                             role="button"
-                            onClick={() => this.abrirIniciarEntrevistaModal(listaEntrevista.id, listaEntrevista.candidato.id)}>
-                            <i className="fa-solid fa-rocket fa-xl" />
-                        </a>
+                            onClick={() => this.abrirIniciarEntrevistaModal(listaEntrevista.id, listaEntrevista.candidato.id)}
+                            disabled={listaEntrevista.candidato.sttCandidato !== 'FORM_OK'}>
+                            <i className="fa-solid fa-rocket fa-lg" />
+                        </button>
                     </td>
                     <td style={{ verticalAlign: 'middle', textAlign: 'center' }}>
                         <div className="row" >
+                            <AcoesCandidato
+                            candidatoId={listaEntrevista.candidato.id}
+                            candidatoStt={listaEntrevista.candidato.sttCandidato}
+                            aprovarCandidato={this.aprovarCandidato}
+                            reprovarCandidato={this.reprovarCandidato}
+                            candidatoDesistiu={this.candidatoDesistiu}
+                            />
+                        </div>  
+                    </td>
+                    <td style={{ verticalAlign: 'middle', textAlign: 'center' }}>  
+                        <div className="row" >
                             <div className="col-md-6" style={{ cursor: 'pointer' }}>
-                                <a className="btn btn-outline-warning btn-md align-items-center"  onClick={() => {this.abrirEditarEntrevistaModal(listaEntrevista.id, listaEntrevista.candidato.id)}}>
-                                    <i className="fa-solid fa-pen-to-square fa-xl" />               
+                                <a className="btn btn-outline-primary align-items-center"  onClick={() => {this.abrirEditarEntrevistaModal(listaEntrevista.id, listaEntrevista.candidato.id)}}>
+                                    <i className="fa-solid fa-pen-to-square fa-lg" />               
                                 </a>
                             </div>
                             <div className="col-md-6" style={{ cursor: 'pointer' }}>
-                                <a className="btn btn-outline-danger btn-md align-items-center" onClick={() => {this.deletarEntrevistaCandidato(listaEntrevista.id, listaEntrevista.candidato.id)}}>
-                                    <i className="fa-solid fa-trash fa-xl" />
+                                <a className="btn btn-outline-primary align-items-center" onClick={() => {this.deletarEntrevistaCandidato(listaEntrevista.id, listaEntrevista.candidato.id)}}>
+                                    <i className="fa-solid fa-trash fa-lg" />
                                 </a>
                             </div>
                         </div>
@@ -413,6 +478,7 @@ class DetalharProcessos extends React.Component {
                                         <th scope="col" style={{ verticalAlign: 'middle', textAlign: 'left' }}>Observação</th>
                                         <th scope="col" style={{ verticalAlign: 'middle', textAlign: 'left' }}>Mensagem</th>
                                         <th scope="col" style={{ verticalAlign: 'middle', textAlign: 'center' }}>Entrevistar</th>
+                                        <th scope="col" style={{ verticalAlign: 'middle', textAlign: 'center' }}>Definir Status</th>
                                         <th scope="col" style={{ verticalAlign: 'middle', textAlign: 'center' }}>Ações</th>
                                     </tr>
                                 </thead>

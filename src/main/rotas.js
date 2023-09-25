@@ -9,6 +9,7 @@ import cadastroMensagem from '../views/cadastro-mensagem'
 import paginaErro from '../views/pagina-erro'
 import formInscricaoCandidato from '../views/form-inscricao-candidato'
 import NavBar from '../components/navbar'
+import Login from '../views/login'
 
 function Rotas(){
     return (
@@ -16,6 +17,7 @@ function Rotas(){
             <Switch>
                 <Route path="/form-inscricao-candidato/:candidatoSelecionado/:entrevistaSelecionada" component={formInscricaoCandidato} />
                 <Route path="/error" component={paginaErro} />
+                <Route path="/login" component={Login} />
                 <AdminRoutes/>
             </Switch>
         </HashRouter>

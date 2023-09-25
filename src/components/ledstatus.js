@@ -3,7 +3,7 @@ import React from 'react';
 const StatusLED = ({ status }) => {
   const statusMappings = {
     REPROVADO: { color: 'danger', text: 'Reprovado' },
-    DESISTIU: { color: 'danger', text: 'Desistiu' },
+    DESISTIU: { color: 'warning', text: 'Desistiu' },
     APROVADO: { color: 'success', text: 'Aprovado' },
     EM_PROCESSO: { color: 'primary', text: 'Em processo' },
     EM_ANALISE: { color: 'primary', text: 'Em análise' },

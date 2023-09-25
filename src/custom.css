@@ -200,6 +200,20 @@ body {
   max-width: 740px;
 }
 
+.background-login {
+  background-image: url(https://softcomtecnologia.com.br/wp-content/uploads/2023/03/trabalhe-conosco.png);
+  background-position: top center;
+  background-size: 100%, cover;
+  background-repeat: no-repeat;
+  height: 300px;
+  width: 100%;
+  height: 727px;
+  padding: 0 150px;
+  display: flex;
+  align-items: center;
+  position: relative;
+}
+
 .topo {
   background-image: url(https://softcomtecnologia.com.br/wp-content/uploads/2023/03/trabalhe-conosco.png);
   background-position: top center;
