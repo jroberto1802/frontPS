@@ -6,8 +6,8 @@ class CadastroPDVService extends ApiService{
         super('/pdvs')
     }
 
-    cadastrar(usuario){
-        return this.post('', usuario);
+    cadastrar(pdv){
+        return this.post('', pdv);
     }
 
     listar(){
